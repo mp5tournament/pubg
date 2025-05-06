@@ -378,9 +378,7 @@ function httpReq(url, args = null, method = 'get', timeout = 10) {
 }
 
 async function getMatch(mid){
-    // 测试
-    // let res = await httpReq('https://osu.ppy.sh/api/get_match',{k:apikey.osu,mp:mid})
-    let res = await httpReq('http://127.0.0.1/osu_api/get_match',{k:apikey.osu,mp:mid})
+    let res = await httpReq('https://osu.ppy.sh/api/get_match',{k:apikey.osu,mp:mid})
     console.log(res)
     return res
 }
