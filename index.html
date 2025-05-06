@@ -363,12 +363,11 @@ function httpReq(url, args = null, method = 'get', timeout = 10) {
     return Promise.race([
         fetch(finalUrl, options)
         .then(async response => {
-            if (!response.ok) throw new Error(`HTTP ${response.status}`)
-            const text = await response.text()
+            const text = await response.text();
             try {
-                return createResult(null, JSON.parse(text))
+                return createResult(null, JSON.parse(text));
             } catch {
-                return createResult(null, text) // 无法解析时返回原始文本
+                return createResult(null, text);
             }
         }),
         timeoutPromise
