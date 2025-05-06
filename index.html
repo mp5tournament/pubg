@@ -1,0 +1,458 @@
+<html>
+<head>
+    <link rel="icon" sizes="32x32" href="icon.png">
+    <meta charset="utf-8">
+    <title>MP5吃鸡裁判表</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    min-width: 800px;
+    min-height: 600px;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+/* 左侧边栏 */
+#sidebar {
+    background: #2c3e50;
+    color: white;
+    padding: 0;
+}
+#sidebar>div{
+    margin: 10px 10px 10px 5px;
+    background-color: white;
+    border-radius:10px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size:34px;
+    user-select:none;
+}
+#sidebar>div:hover{
+    filter: drop-shadow(0 0 6px rgba(192, 255, 255, 0.8));
+    cursor: pointer;
+}
+#sidebar>div>span{
+    position: relative;
+}
+
+#sidebar>div>img{
+    width: 100%;
+    height: 100%;
+}
+
+/* 右侧主容器 */
+.right-container {
+    flex: 1;
+    gap:1rem;
+    margin:1rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* 允许宽度压缩 */
+}
+
+/* 主内容区公共样式 */
+.split-container {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+}
+
+/* 分栏通用样式 */
+.split-panel {
+    overflow-y: auto;
+    min-width: 0;
+}
+
+/* main区域分栏示例 */
+.main-left {
+    flex: 0 0 300px;
+    background: #f0f8ff;
+}
+.main-right {
+    flex: 1;
+    background: #f0fff8;
+}
+
+/* scoreboard分栏示例 */
+.score-left {
+    flex: 0 0 50px;
+    background: #ffe4e1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding:0;
+}
+
+.vertical-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: min-content;
+}
+
+.vertical-text {
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    font-size: 28px;
+    font-weight:bold;
+    margin: 10px 0;
+}
+
+.score-right {
+    flex: 1;
+    background: #fff8ea;
+}
+
+/* 通用 */
+.hidden{
+    display: none !important;
+}
+table{
+    font-size:18px;
+    line-height: 30px;
+}
+td{
+    vertical-align:top;
+}
+span.emoji{
+    width:30px;
+    display:inline-block;
+}
+.title{
+    font-weight:bold;
+}
+.cen{
+    text-align: center;
+}
+.rta{
+    text-align: right;
+}
+.mid{
+    margin:auto;
+}
+button{
+    width:100px;
+    font-size:18px;
+    height:30px;
+}
+.textarea{
+    width:195px;
+    padding-left:3px;
+    padding-right:3px;
+    background-color: white;
+    border:1px solid #767676;
+    border-radius: 2px;
+}
+.info-textarea{
+    font-family:"Microsoft YaHei";
+}
+select{
+    width:146px;
+    font-size:18px;
+    height:30px;
+}
+input{
+    width:210px;
+    font-size:18px;
+    height:30px;
+}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+}
+input[type='number'] {
+    -moz-appearance: textfield;
+}
+.tip-box {
+    position: fixed; 
+    top: 0;
+    bottom: 0;
+    font-size: 12px;
+    line-height: 12px;
+    height: 18px;
+    padding: 3px; 
+    box-shadow: 1px 1px 3px grey;
+    background-color: white; 
+    z-index:40;
+    display: none;
+    user-select: none;
+}
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+.blink {
+    animation: blink 0.5s infinite;
+}
+#cmd div{
+    padding-left:3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#cmd div:hover{
+    cursor: pointer;
+    background-color: #fffffa;
+}
+/* 配置 */
+#configui { 
+    position: fixed; 
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index:10;
+}
+#configui .window { 
+    position: fixed; 
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin:auto;
+    width: 410px; 
+    height: 210px; 
+    padding: 20px; 
+    box-shadow: 3px 3px 10px #404040;
+    background-color: white; 
+    z-index:20;
+}
+#configui td{
+    padding:5px 10px;
+}
+</style>
+</head>
+<body>
+<div class="tip-box">复制成功</div>
+<div id="configui"><div class="window">
+    <table cellspacing="0" style="width:100%;">
+        <tr>
+            <td class="rta">cache apikey</td><td><input></td>
+        </tr>
+        <tr>
+            <td class="rta">osu apikey</td><td><input></td>
+        </tr>
+        <tr>
+            <td class="rta">记住apikey</td><td><input type="checkbox" style="width: 30px;height: 30px;"></td>
+        </tr>
+    </table>
+    <table cellspacing="0" class="mid">
+        <tr><td style="width:175px;padding: 12px;" class="rta"><button onclick="saveConfig()">确定</button></td>
+            <td style="width:175px;padding: 12px;"><button onclick="configui.classList.add('hidden')">取消</button></td></tr>
+    </table>
+</div></div>
+
+<div id="sidebar">
+    <div onclick="location.reload()"><img src="./icon.png"/></div>
+    <div onclick="openConfig()"><span style="top:-2px;">⚙️</span></div>
+    <div onclick="window.open('https://github.com/mp5tournament/pubg')"><svg height="38" viewBox="0 0 24 24" width="38">
+        <path d="M12 1C5.9225 1 1 5.9225 1 12C1 16.8675 4.14875 20.9787 8.52125 22.4362C9.07125 22.5325 9.2775 22.2025 9.2775 21.9137C9.2775 21.6525 9.26375 20.7862 9.26375 19.865C6.5 20.3737 5.785 19.1912 5.565 18.5725C5.44125 18.2562 4.905 17.28 4.4375 17.0187C4.0525 16.8125 3.5025 16.3037 4.42375 16.29C5.29 16.2762 5.90875 17.0875 6.115 17.4175C7.105 19.0812 8.68625 18.6137 9.31875 18.325C9.415 17.61 9.70375 17.1287 10.02 16.8537C7.5725 16.5787 5.015 15.63 5.015 11.4225C5.015 10.2262 5.44125 9.23625 6.1425 8.46625C6.0325 8.19125 5.6475 7.06375 6.2525 5.55125C6.2525 5.55125 7.17375 5.2625 9.2775 6.67875C10.1575 6.43125 11.0925 6.3075 12.0275 6.3075C12.9625 6.3075 13.8975 6.43125 14.7775 6.67875C16.8813 5.24875 17.8025 5.55125 17.8025 5.55125C18.4075 7.06375 18.0225 8.19125 17.9125 8.46625C18.6138 9.23625 19.04 10.2125 19.04 11.4225C19.04 15.6437 16.4688 16.5787 14.0213 16.8537C14.42 17.1975 14.7638 17.8575 14.7638 18.8887C14.7638 20.36 14.75 21.5425 14.75 21.9137C14.75 22.2025 14.9563 22.5462 15.5063 22.4362C19.8513 20.9787 23 16.8537 23 12C23 5.9225 18.0775 1 12 1Z"/>
+    </svg></div>
+    <hr style="border-color:#89a;margin:0 8px 0 3px;">
+    <div class="hidden" onclick="showAlert()"><span style="top:-5px;" class="blink">⚠️</span></div>
+</div>
+
+<div class="right-container">
+    <div id="main" class="split-container">
+        <div class="split-panel main-left" style="display: flex;flex-direction: column;">
+            <div style="padding:5px;font-weight: bold;background-color: #e0e8ff;">裁判指令：<span id="stage" style="color:#46c">准备阶段</span></div>
+            <div id="cmd" style="overflow-y: auto">
+                <div onclick="copyText(this)">!MP TIMER 120</div>
+            </div>
+        </div>
+        <div class="split-panel main-right">
+            <div style="height: 1200px">Main Right</div>
+        </div>
+    </div>
+
+    <div id="scoreboard" class="split-container">
+        <div class="split-panel score-left">
+            <div class="vertical-center">
+                <div class="vertical-text">记</div>
+                <div class="vertical-text">分</div>
+                <div class="vertical-text">版</div>
+            </div>
+        </div>
+        <div class="split-panel score-right">
+            aaaaa
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+function asserts(x){
+    if(!x)throw ''
+}
+// 复制命令
+{
+    const mouse={x:0,y:0}
+    const box0=document.getElementsByClassName('tip-box')[0]
+    document.addEventListener('click', function(event){
+        mouse.x = event.clientX
+        mouse.y = event.clientY
+    })
+    function copyText(x,y=null){
+        const input = document.createElement('textarea')
+        document.body.appendChild(input)
+        input.innerHTML = y || x.title || x.textContent
+        input.select()
+        document.execCommand('Copy')
+        document.body.removeChild(input)
+
+        setTimeout(function(){
+            const box = box0.cloneNode(true)
+            document.body.appendChild(box)
+            box.style.left = mouse.x + 'px'
+            box.style.top = mouse.y + 'px'
+            box.style.display = 'block'
+            box.style.opacity = 1
+            setTimeout(function(){
+                box.style.opacity = 0.75
+                setTimeout(function(){
+                    box.style.opacity = 0.5
+                },40)
+                setTimeout(function(){
+                    box.style.opacity = 0.25
+                },80)
+                setTimeout(function(){
+                    box.style.opacity = 0
+                    document.body.removeChild(box)
+                },120)
+            },500)
+        },10)
+    }
+}
+
+// 网络
+function httpReq(url, args = null, method = 'get', timeout = 10) {
+    // 统一返回结构
+    const createResult = (error, data) => ({ error, data })
+
+    // 参数预处理
+    method = method.toUpperCase()
+    let finalUrl = url
+    let options = { method }
+
+    // 处理 GET/POST 参数
+    if (method === 'GET' && args) {
+        finalUrl += `?${new URLSearchParams(args).toString()}`
+    } else if (method === 'POST') {
+        options.headers = { 'Content-Type': 'application/json' }
+        options.body = JSON.stringify(args || {})
+    }
+
+    // 超时控制器
+    const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('timeout')), timeout * 1000)
+    })
+
+    // 发送请求
+    return Promise.race([
+        fetch(finalUrl, options)
+        .then(async response => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`)
+            const text = await response.text()
+            try {
+                return createResult(null, JSON.parse(text))
+            } catch {
+                return createResult(null, text) // 无法解析时返回原始文本
+            }
+        }),
+        timeoutPromise
+    ]).catch(error => {
+        return createResult(error.message || 'network error', null)
+    })
+}
+
+async function getMatch(mid){
+    // 测试
+    // let res = await httpReq('https://osu.ppy.sh/api/get_match',{k:apikey.osu,mp:mid})
+    let res = await httpReq('http://127.0.0.1/osu_api/get_match',{k:apikey.osu,mp:mid})
+    console.log(res)
+    return res
+}
+
+// ID元素常量
+const main=document.getElementById('main')
+const general=document.getElementById('general')
+const configui=document.getElementById('configui')
+const stage=document.getElementById('stage')
+const cmd=document.getElementById('cmd')
+
+
+// apikey与警告
+const apikey={
+    cache:'',
+    osu:'',
+    remember:false,
+}
+{
+    const alertInfo={
+        cache:{time:null,info:null},
+        osu:{time:null,info:null},
+    }
+    function showAlert(){
+
+    }
+
+    async function testApi(target=null){
+        const result = await httpReq('https://cache.flf.moe/cache/123a',{'api_key':'Gsm6fhCw_xoR3t6TgOi_tw'},'post')
+        console.log(target)
+        console.log(result)
+    }
+
+    function testApiAll(){
+        testApi('cache')
+        testApi('osu')
+    }
+}
+{
+    let y=configui.getElementsByTagName('input')
+    function openConfig(){
+        y[0].value=apikey.cache
+        y[1].value=apikey.osu
+        y[2].checked=apikey.remember
+        configui.classList.remove('hidden')
+    }
+    function saveConfig(){
+        apikey.cache=y[0].value
+        apikey.osu=y[1].value
+        if(apikey.remember=y[2].checked){
+            localStorage.setItem('apikey',JSON.stringify(apikey))
+        }else{
+            localStorage.removeItem('apikey')
+        }
+        configui.classList.add('hidden')
+        testApiAll()
+    }
+    // 初始化
+    try{
+        let x=JSON.parse(localStorage.getItem('apikey'))
+        asserts(x.cache&&x.osu)
+        y[0].value=apikey.cache=x.cache
+        y[1].value=apikey.osu=x.osu
+        y[2].checked=apikey.remember=true
+        configui.classList.add('hidden')
+        testApiAll()
+    }catch{}
+}
+// 主流程
+if(0){
+    window.onbeforeunload=()=>true
+}
+</script>
+</body>
+</html>
