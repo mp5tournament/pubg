@@ -1449,6 +1449,7 @@ const StageG={
                     mapText='使用随机自选图。此类图仅剩一张，将直接使用该图。'
                     StageG.map=StageG.optionalMap[0]
                 }
+                break
             case 'h':
                 StageG.optionalMap=[...RemainingBeatmap.host]
                 if(StageG.optionalMap.length>1){
@@ -1457,10 +1458,12 @@ const StageG={
                     mapText='使用随机固定图。此类图仅剩最后一张，将直接使用该图。'
                     StageG.map=StageG.optionalMap[0]
                 }
+                break
             case 'o':
                 mapText='按顺序使用固定图。'
                 StageG.optionalMap=[RemainingBeatmap.host[0]]
                 StageG.map=StageG.optionalMap[0]
+                break
             case 'a':
                 StageG.optionalMap=[...RemainingBeatmap.host].concat([...RemainingBeatmap.player])
                 if(StageG.optionalMap.length>1){
@@ -1469,6 +1472,7 @@ const StageG={
                     mapText='仅剩最后一张赛图，将直接使用该图。'
                     StageG.map=StageG.optionalMap[0]
                 }
+                break
         }
         StageG.cmd.part0=[
             `正在进行第${Progress.round+1}/${Order.length}轮，`+
