@@ -445,10 +445,6 @@ Guozi on Osu \t 1000684
 </div>
 
 <script type="text/javascript">
-    
-const TOURNAMENT='MP5PUBG'
-
-
 function asserts(x){
     if(!x)throw ''
 }
@@ -690,6 +686,7 @@ const apikey={
 //  配置
 DefaultConfig={
     'mp5':{
+        TOURNAMENT:'MP5PUBG',
         order:function(x){ // p=随机玩家图 h=随机固定图 o=顺序固定图 a=随机任意图 // 请不要混用a与其他字母，或混用h和o
             const custom={
                 4:[
@@ -801,6 +798,7 @@ DefaultConfig={
         pointsDecimals:0, // 显示小数位数
     },
     'pager':{
+        TOURNAMENT:'POBG S4',
         order:function(x){ // p=随机玩家图 h=随机固定图 o=顺序固定图 a=随机任意图 // 请不要混用a与其他字母，或混用h和o
             const custom={
                 6:[
@@ -1038,8 +1036,8 @@ const StageP={
                     
                     let text=[]
 
-                    if(!data.match.name.startsWith(TOURNAMENT)){
-                        text.push(`房间名为${data.match.name}，没有以${TOURNAMENT}开头`)
+                    if(!data.match.name.startsWith(Config.TOURNAMENT)){
+                        text.push(`房间名为${data.match.name}，没有以${Config.TOURNAMENT}开头`)
                     }
                     
                     let t=new Date(data.match.start_time+'Z')
@@ -1223,7 +1221,7 @@ const StageP={
         let text=[]
         let newMap=[]
         let newUser=[]
-        let cmd=[`!MP MAKE ${TOURNAMENT}: (房间)`,'!MP SET 2 3','!MP ADDREF','!MP SETTINGS']
+        let cmd=[`!MP MAKE ${Config.TOURNAMENT}: (房间) vs (名)`,'!MP SET 2 3','!MP ADDREF','!MP SETTINGS']
         StageP.table.mapSet=new Set()
         StageP.table.playerSet=new Set()
 
