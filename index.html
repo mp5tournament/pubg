@@ -865,6 +865,7 @@ DefaultConfig={
             while(i>=0){
                 if(x.score[i].game)sum+=x.score[i].points
                 else break
+                i--
             }
             return sum
         },
@@ -882,6 +883,7 @@ DefaultConfig={
                 while(i>=0){
                     if(x.score[i].game)sum+=x.score[i].score
                     else break
+                    i--
                 }
                 return sum
             }
