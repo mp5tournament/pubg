@@ -8,16 +8,22 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Microsoft YaHei", sans-serif;
 }
 
 body {
     display: flex;
     width: 100vw;
     height: 100vh;
-    min-width: 800px;
+    min-width: 1020px;
     min-height: 600px;
     font-size: 18px;
     line-height: 30px;
+}
+@media (min-height: 600px) {
+    body {
+        overflow-y: hidden;
+    }
 }
 
 /* 左侧边栏 */
@@ -37,6 +43,7 @@ body {
     align-items: center;
     font-size:34px;
     user-select:none;
+    overflow:hidden
 }
 #sidebar>div:hover{
     filter: drop-shadow(0 0 6px rgba(192, 255, 255, 0.8));
@@ -74,17 +81,20 @@ body {
     min-width: 0;
 }
 
-/* main区域分栏示例 */
 .main-left {
     flex: 0 0 300px;
     background: #f0f8ff;
 }
 .main-right {
+    display: flex;
     flex: 1;
     background: #f0fff8;
 }
-
-/* scoreboard分栏示例 */
+#mainConsole{
+    background: #fffff0;
+    flex: 1;
+    padding: 5px;
+}
 .score-left {
     flex: 0 0 50px;
     background: #ffe4e1;
@@ -122,9 +132,13 @@ body {
 table{
     font-size:18px;
     line-height: 30px;
+    width:100%;
 }
 td{
     vertical-align:top;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 span.emoji{
     width:30px;
@@ -142,37 +156,78 @@ span.emoji{
 .mid{
     margin:auto;
 }
-button{
-    width:100px;
-    font-size:18px;
-    height:30px;
-}
-.textarea{
-    width:195px;
-    padding-left:3px;
-    padding-right:3px;
-    background-color: white;
-    border:1px solid #767676;
-    border-radius: 2px;
-}
-.info-textarea{
-    font-family:"Microsoft YaHei";
-}
 select{
     width:146px;
     font-size:18px;
     height:30px;
 }
-input{
-    width:210px;
+button{
+    border: 1px solid;
+    border-radius: 4px;
+    width:100px;
     font-size:18px;
     height:30px;
+    user-select: none;
+}
+button:disabled{
+    background-color: #eee !important;
+    border: 1px solid #bbb !important;
+}
+button.small{
+    border: 1px solid;
+    border-radius: 4px;
+    width:20px;
+    font-size:10px;
+    margin:5px 0;
+    height:20px;
+}
+button.blue{
+    background-color: #e0f0ff;
+    border: 1px solid #abc;
+    color:#008;
+}
+button.blue:hover{
+    background-color: #f0f8ff;
+}
+button.red{
+    background-color: #ffe4e1;
+    border: 1px solid #dbb;
+    color:#800;
+}
+button.red:hover{
+    background-color: #fff4f0;
+}
+button.yellow{
+    background-color: #ffffd0;
+    border: 1px solid #ddb;
+    color:#880;
+}
+button.yellow:hover{
+    background-color: #fffff0;
+}
+textarea {
+    resize: none;
+    width: 100%;
+    height: 73px;
+    padding: 0 3px;
+    font-size: 18px;
+    font-family: inherit;
+}
+input[type="checkbox"] {
+    width: 24px;
+    height: 30px;
+}
+input{
+    width:100%;
+    font-size:18px;
+    height:30px;
+    padding:0 3px;
+}
+select{
+    width:100%;
 }
 input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {
     -webkit-appearance: none !important;
-}
-input[type='number'] {
-    -moz-appearance: textfield;
 }
 .tip-box {
     position: fixed; 
@@ -196,13 +251,13 @@ input[type='number'] {
 .blink {
     animation: blink 0.5s infinite;
 }
-#cmd div{
+#cmdTable div{
     padding-left:3px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-#cmd div:hover{
+#cmdTable div:hover{
     cursor: pointer;
     background-color: #fffffa;
 }
@@ -223,9 +278,9 @@ input[type='number'] {
     left: 0;
     right: 0;
     margin:auto;
-    width: 410px; 
-    height: 210px; 
-    padding: 20px; 
+    width: 469px; 
+    height: 245px; 
+    padding: 40px 20px; 
     box-shadow: 3px 3px 10px #404040;
     background-color: white; 
     z-index:20;
@@ -233,52 +288,146 @@ input[type='number'] {
 #configui td{
     padding:5px 10px;
 }
+/* 警告悬浮窗 */
+#alertTip {
+    opacity: 0;
+    visibility: hidden;
+    position: fixed;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    white-space: pre;
+    background: #ffb;
+    top:323px;
+    left:60px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+}
+
+#alertTip.active {
+    opacity: 1;
+    visibility: visible;
+}
+/* 主流程 */
+.waiting{
+    color:#aaa;
+}
+.error{
+    color:red;
+}
+.warning{
+    color:orange;
+}
+/* 表格项目 */
+.button{
+    width: 30px;
+    text-align: center;
+}
+.rank{
+    width: 30px;
+    text-align: center;
+}
+.username{
+    width: 140px;
+    max-width: 140px;
+}
+.eliminate{
+    color:#aaa;
+}
+.raw_score input{
+    text-align: right;
+}
+.raw_score{
+    width:86px;
+}
+.score{
+    width:80px;
+    max-width:80px;
+    text-align: right;
+}
+.mod input, .mod, .award{
+    font-family: 'consolas';
+}
+.points, .round_points{
+    width:72px;
+    text-align: right;
+    padding-right: 15px;
+}
+.game_points{
+    width: 30px;
+    text-align: center;
+}
 </style>
 </head>
 <body>
 <div class="tip-box">复制成功</div>
+
+<div id="alertTip"></div>
+
 <div id="configui"><div class="window">
-    <table cellspacing="0" style="width:100%;">
+    <table cellspacing="0">
         <tr>
-            <td class="rta">cache apikey</td><td><input></td>
+            <td class="rta" style="width:210px;">cache apikey</td><td><input></td>
         </tr>
         <tr>
-            <td class="rta">osu apikey</td><td><input></td>
+            <td class="rta" style="width:210px;">osu apikey</td><td><input></td>
         </tr>
         <tr>
-            <td class="rta">记住apikey</td><td><input type="checkbox" style="width: 30px;height: 30px;"></td>
+            <td class="rta">记住apikey</td><td><input type="checkbox"></td>
         </tr>
     </table>
-    <table cellspacing="0" class="mid">
-        <tr><td style="width:175px;padding: 12px;" class="rta"><button onclick="saveConfig()">确定</button></td>
-            <td style="width:175px;padding: 12px;"><button onclick="configui.classList.add('hidden')">取消</button></td></tr>
-    </table>
+    <div style="width:100%;padding: 12px;" class="cen"><button class="blue" onclick="saveConfig()">确定</button></div>
 </div></div>
 
 <div id="sidebar">
-    <div onclick="location.reload()"><img src="./icon.png"/></div>
-    <div onclick="openConfig()"><span style="top:-2px;">⚙️</span></div>
+    <div onclick="location.reload()" title="刷新裁判表"><img src="icon.png"/></div>
+    <div><img id="modeLogo"></div>
+    <div title="打开MPLink" onclick="if(MID)window.open(`https://osu.ppy.sh/community/matches/${MID}`)"><span style="top:-1px;">🏠</span></div>
+    <div title="打开直播展示页面" onclick="window.open(`live.html?name=${Mode}`)"><span style="top:-1px;">📊</span></div>
     <div onclick="window.open('https://github.com/mp5tournament/pubg')"><svg height="38" viewBox="0 0 24 24" width="38">
         <path d="M12 1C5.9225 1 1 5.9225 1 12C1 16.8675 4.14875 20.9787 8.52125 22.4362C9.07125 22.5325 9.2775 22.2025 9.2775 21.9137C9.2775 21.6525 9.26375 20.7862 9.26375 19.865C6.5 20.3737 5.785 19.1912 5.565 18.5725C5.44125 18.2562 4.905 17.28 4.4375 17.0187C4.0525 16.8125 3.5025 16.3037 4.42375 16.29C5.29 16.2762 5.90875 17.0875 6.115 17.4175C7.105 19.0812 8.68625 18.6137 9.31875 18.325C9.415 17.61 9.70375 17.1287 10.02 16.8537C7.5725 16.5787 5.015 15.63 5.015 11.4225C5.015 10.2262 5.44125 9.23625 6.1425 8.46625C6.0325 8.19125 5.6475 7.06375 6.2525 5.55125C6.2525 5.55125 7.17375 5.2625 9.2775 6.67875C10.1575 6.43125 11.0925 6.3075 12.0275 6.3075C12.9625 6.3075 13.8975 6.43125 14.7775 6.67875C16.8813 5.24875 17.8025 5.55125 17.8025 5.55125C18.4075 7.06375 18.0225 8.19125 17.9125 8.46625C18.6138 9.23625 19.04 10.2125 19.04 11.4225C19.04 15.6437 16.4688 16.5787 14.0213 16.8537C14.42 17.1975 14.7638 17.8575 14.7638 18.8887C14.7638 20.36 14.75 21.5425 14.75 21.9137C14.75 22.2025 14.9563 22.5462 15.5063 22.4362C19.8513 20.9787 23 16.8537 23 12C23 5.9225 18.0775 1 12 1Z"/>
     </svg></div>
+    <div onclick="configui.classList.remove('hidden')"><span style="top:-1px;">🗝️</span></div>
     <hr style="border-color:#89a;margin:0 8px 0 3px;">
-    <div class="hidden" onclick="showAlert()"><span style="top:-5px;" class="blink">⚠️</span></div>
+    <div id="alertLogo" class="hidden"><span style="top:-5px;" class="blink">⚠️</span></div>
 </div>
 
 <div class="right-container">
     <div id="main" class="split-container">
         <div class="split-panel main-left" style="display: flex;flex-direction: column;">
-            <div style="padding:5px;font-weight: bold;background-color: #e0e8ff;">裁判指令：<span id="stage" style="color:#46c">准备阶段</span></div>
-            <div id="cmd" style="overflow-y: auto">
+            <div style="padding:5px;font-weight: bold;background-color: #e0e8ff;">
+                <span id="stage" style="color:#46c">准备阶段</span>
+                <button class="yellow" style="float:right" onclick="currentStage.nextStage()">进入下阶段</button>
+            </div>
+            <div id="cmdTable" style="overflow-y: auto">
                 <div onclick="copyText(this)">!MP TIMER 120</div>
             </div>
         </div>
         <div class="split-panel main-right">
-            <div style="height: 1200px">Main Right</div>
+            <div class="split-panel" style="flex:2;padding: 5px;max-width: 400px;">
+                <div id="mainTableBanner"></div>
+                <table id="mainTable">
+                </table>
+            </div>
+            <div class="split-panel" id="mainConsole">
+                <div>添加图池与选手：<span style="user-select:none" title="每行一张（及对应的选手），行内元素用\t区分（\t为制表符，即直接从表格复制即可）
+每行格式为：选手用户名 \t 图bid \t mod
+其中mod处可使用单个或多个单元格，即“DTHD”和“DT \t HD”均表示DTHD；留空则为NM
+对于固定图，直接省略第一个单元格或留空即可
+如：
+327526 \t HT \t HD
+Guozi on Osu \t 1000684
+表示一张MOD为HTHD的固定图327526和一张MOD为NM的选手图1000684">❓</span></div>
+                <textarea placeholder="将鼠标移动至上方问号以查看本区域输入格式"></textarea>
+                <button class="blue" style="margin-top: 5px;" onclick="StageP.add()">添加以上</button>
+                <button class="red" style="margin-top: 5px;" onclick="StageP.clear()">清空全部</button>
+                <div>比赛房间Link或ID：</div>
+                <input style="width:100%" onchange="StageP.updateMID(this)">
+                <div>左侧列表中的✔️表示该选手已签到，⏳表示该选手未签到。点击以切换该状态。</div>
+            </div>
         </div>
     </div>
 
-    <div id="scoreboard" class="split-container">
+    <div class="split-container">
         <div class="split-panel score-left">
             <div class="vertical-center">
                 <div class="vertical-text">记</div>
@@ -287,19 +436,26 @@ input[type='number'] {
             </div>
         </div>
         <div class="split-panel score-right">
-            aaaaa
+            <div style="font-size: 14px;color:#aaa;line-height: 14px;margin:5px;">在下表各单元格上悬浮光标以获得更多信息</div>
+            <table id="scoreboard" style="width: auto;">
+                <tr id="scoreboardHeader" class="persistence"></tr>
+            </table>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
+    
+const TOURNAMENT='MP5PUBG'
+
+
 function asserts(x){
     if(!x)throw ''
 }
 // 复制命令
 {
     const mouse={x:0,y:0}
-    const box0=document.getElementsByClassName('tip-box')[0]
+    const box0=document.querySelector('.tip-box')
     document.addEventListener('click', function(event){
         mouse.x = event.clientX
         mouse.y = event.clientY
@@ -335,11 +491,33 @@ function asserts(x){
         },10)
     }
 }
+// 清理资源
+function clearElement(element) {
+    while (element.lastChild) {
+        const child = element.lastChild
+        if (child instanceof HTMLElement && !child.classList.contains('persistence')) {
+            clearElement(child)
+            child.onclick = null
+            child.onchange = null
+        }
+
+        element.removeChild(child)
+    }
+}
 
 // 网络
+let retryWaitingTime=5000
+let nextRequestTime=500
+
 function httpReq(url, args = null, method = 'get', timeout = 10) {
+    if(args){
+        for(let key in args){
+            if(args[key]===null||args[key]===undefined)delete args[key]
+        }
+    }
+
     // 统一返回结构
-    const createResult = (error, data) => ({ error, data })
+    const createResult = (error, data, text) => ({ error, data, text })
 
     // 参数预处理
     method = method.toUpperCase()
@@ -365,9 +543,9 @@ function httpReq(url, args = null, method = 'get', timeout = 10) {
         .then(async response => {
             const text = await response.text();
             try {
-                return createResult(null, JSON.parse(text));
+                return createResult(null, JSON.parse(text), text);
             } catch {
-                return createResult(null, text);
+                return createResult(null, text, text);
             }
         }),
         timeoutPromise
@@ -376,9 +554,58 @@ function httpReq(url, args = null, method = 'get', timeout = 10) {
     })
 }
 
-async function getMatch(mid){
-    let res = await httpReq('https://osu.ppy.sh/api/get_match',{k:apikey.osu,mp:mid})
-    console.log(res)
+MID=null
+async function getOsuData(target='match',id=MID,test=false){
+    let time=new Date()
+    let param={k:apikey.osu}
+    if(target=='match'){
+        param.mp=id
+    } else if(target=='user') {
+        param.u=id
+        param.type ='string'
+    } else if(target=='beatmaps'){
+        param.b=id
+        param.m=0
+    } else {
+        return null
+    }
+
+    let res = await httpReq('https://osu.ppy.sh/api/get_'+target,param)
+    let error=null
+    if(res.data){
+        if(res.data.error)error='获取游戏信息失败，请检查osu apikey'
+        if(typeof(res.data)!='object')error='获取游戏信息失败，请检查网络连接'
+    }else if(res.error){
+        if(res.error=='Failed to fetch'){
+            error='获取游戏信息失败，请检查osu apikey或网络连接'
+        }else{
+            error='获取游戏信息失败，请检查网络连接'
+        }
+    }
+    if(error)res.error=error
+    updateAlert('osu',time,error)
+
+    if(error&&test){
+        setTimeout(()=>{
+            getOsuData(target,id,true)
+        },retryWaitingTime)
+    }
+    return res
+}
+async function saveCache(data,cacheName=Mode,test=false){
+    let time=new Date()
+    let res = await httpReq('https://cache.flf.moe/cache/mp5pubg_'+cacheName,{api_key:apikey.cache,value:data},'post')
+    let error=null
+    if(res.data=='API KEY错误')error='连接缓存服务器失败，请检查cache apikey'
+    else if(res.error)error='连接缓存服务器失败，请检查网络连接'
+    if(error)res.error=error
+    updateAlert('cache',time,error)
+
+    if(error&&test){
+        setTimeout(()=>{
+            saveCache(data,cacheName,true)
+        },retryWaitingTime)
+    }
     return res
 }
 
@@ -387,68 +614,1246 @@ const main=document.getElementById('main')
 const general=document.getElementById('general')
 const configui=document.getElementById('configui')
 const stage=document.getElementById('stage')
-const cmd=document.getElementById('cmd')
-
+const cmdTable=document.getElementById('cmdTable')
+const mainTable=document.getElementById('mainTable')
+const mainTableBanner=document.getElementById('mainTableBanner')
+const mainConsole=document.getElementById('mainConsole')
+const scoreboard=document.getElementById('scoreboard')
+const scoreboardHeader=document.getElementById('scoreboardHeader')
 
 // apikey与警告
 const apikey={
     cache:'',
     osu:'',
-    remember:false,
 }
 {
+    const alertLogo=document.getElementById('alertLogo')
+    const alertTip = document.getElementById('alertTip')
     const alertInfo={
-        cache:{time:null,info:null},
-        osu:{time:null,info:null},
-    }
-    function showAlert(){
-
+        cache:{time:new Date(),error:null},
+        osu:{time:new Date(),error:null},
     }
 
-    async function testApi(target=null){
-        const result = await httpReq('https://cache.flf.moe/cache/123a',{'api_key':'Gsm6fhCw_xoR3t6TgOi_tw'},'post')
-        console.log(target)
-        console.log(result)
+    alertLogo.addEventListener('mouseenter', () => {
+        alertTip.classList.add('active')
+    })
+
+    alertLogo.addEventListener('mouseleave', () => {
+        alertTip.classList.remove('active')
+    })
+    function updateAlert(type,time,error){
+        if(time<alertInfo[type].time)return
+        alertInfo[type]={time,error}
+        let text=[]
+        if(alertInfo.cache.error)text.push(alertInfo.cache.error)
+        if(alertInfo.osu.error)text.push(alertInfo.osu.error)
+        if(alertTip.textContent=text.join('\n')){
+            alertLogo.classList.remove('hidden')
+        }else{
+            alertLogo.classList.add('hidden')
+            alertTip.classList.remove('active')
+        }
     }
 
-    function testApiAll(){
-        testApi('cache')
-        testApi('osu')
+    function testApi(){
+        getOsuData('user','',true)
+        saveCache(null,'test',true)
     }
 }
 {
-    let y=configui.getElementsByTagName('input')
-    function openConfig(){
-        y[0].value=apikey.cache
-        y[1].value=apikey.osu
-        y[2].checked=apikey.remember
-        configui.classList.remove('hidden')
-    }
+    let y=configui.querySelectorAll('input')
     function saveConfig(){
         apikey.cache=y[0].value
         apikey.osu=y[1].value
-        if(apikey.remember=y[2].checked){
-            localStorage.setItem('apikey',JSON.stringify(apikey))
+        if(y[2].checked){
+            localStorage.setItem('apikey',apikey.osu)
+            localStorage.setItem('cache_apikey',apikey.cache)
         }else{
             localStorage.removeItem('apikey')
+            localStorage.removeItem('cache_apikey')
         }
         configui.classList.add('hidden')
-        testApiAll()
+        testApi()
     }
     // 初始化
-    try{
-        let x=JSON.parse(localStorage.getItem('apikey'))
-        asserts(x.cache&&x.osu)
-        y[0].value=apikey.cache=x.cache
-        y[1].value=apikey.osu=x.osu
-        y[2].checked=apikey.remember=true
-        configui.classList.add('hidden')
-        testApiAll()
-    }catch{}
+    y[0].value=apikey.cache=localStorage.getItem('cache_apikey')
+    y[1].value=apikey.osu=localStorage.getItem('apikey')
+    if(apikey.cache||apikey.osu){
+        y[2].checked=true
+        if(apikey.cache&&apikey.osu){
+            configui.classList.add('hidden')
+            testApi()
+        }
+    }
+    
 }
+//  配置
+DefaultConfig={
+    'mp5':{
+        order:function(x){ // p=随机玩家图 h=随机固定图 o=顺序固定图 a=随机任意图 // 请不要混用a与其他字母，或混用h和o
+            const custom={
+                7:[
+                    {playerEnd:6,game:'aaa'},
+                    {playerEnd:5,game:'aaa'},
+                    {playerEnd:4,game:'aa'},
+                    {playerEnd:3,game:'aa'},
+                    {            game:'aa'},
+                ],
+            }
+            if(x in custom)return custom[x]
+            return null
+        },
+        modMultiply:{
+            EZ: 1.5,
+            DT: 1/1.2,
+            HT: 1/0.3,
+        },
+        awardMultiply: 1.5,
+        showFixed: true,
+        totalPointsFunction: function(x){
+            let sum=0
+            for(let s of x.score)
+                if(s.game)sum+=s.points
+            return sum
+        },
+        pointsFunction: function(x,n){ // x表示名次，n表示剩余人数，N表示总人数
+            return (n-x+1)*Config.constCoef*100/n
+        },
+        rankFunction: function(x,y){
+            const alive=y.alive-x.alive
+            if(alive)return alive
+            const currentPoints=y.currentPoints-x.currentPoints
+            if(currentPoints)return currentPoints
+            function sumZ(z){
+                let sum=0
+                for(let s of z.score)
+                    if(s.zscore)sum+=s.zscore
+                return sum
+            }
+            const zscore=sumZ(y)-sumZ(x)
+            return zscore
+        },
+        constCoef:11639628,
+        pointsDecimals:0, // 显示小数位数
+    },
+    'pager':{
+        order:function(x){ // p=随机玩家图 h=随机固定图 o=顺序固定图 a=随机任意图 // 请不要混用a与其他字母，或混用h和o
+            const custom={
+                7:[
+                    {playerEnd:6,game:'aaa'},
+                    {playerEnd:5,game:'aaa'},
+                    {playerEnd:4,game:'aa'},
+                    {playerEnd:3,game:'aa'},
+                    {            game:'aa'},
+                ],
+            }
+            if(x in custom)return custom[x]
+            return null
+        },
+        modMultiply:{
+            EZ: 2,
+        },
+        awardMultiply: 1,
+        showFixed: false,
+        totalPointsFunction: function(x,n){ // x表示当前组数，y表示当前轮数，X、Y表示总组和总轮数。
+            return [0.5,0.5,0.5]
+        },
+        pointsFunction: function(x,n){ // x表示名次，n表示剩余人数，N表示总人数
+            return n-x+1
+        },
+        rankFunction: function(x,y){
+            return 0
+            
+        },
+        constCoef:1,
+        pointsDecimals:0,
+    },
+}
+function initConfig(){
+    let mode=(localStorage.getItem('mode')||'mp5').toLocaleLowerCase()
+    if(!(mode in DefaultConfig))mode='mp5'
+    document.getElementById('modeLogo').src=`assets/${mode}.png`
+    document.getElementById('modeLogo').title=`裁判表当前为${mode}模式，请在控制台中输入“MODE('模式名')”以更改。`
+    return [mode, DefaultConfig[mode]]
+}
+function MODE(mode){
+    if(mode){
+        mode=mode.toLocaleLowerCase()
+        if(!(mode in DefaultConfig))return '没有这个模式'
+        localStorage.setItem('mode',mode)
+    }else{
+        localStorage.removeItem('mode')
+    }
+    location.reload()
+}
+const [Mode, Config]=initConfig()
+// 传递Data
+let Order=null
+const OsuData={
+    user:{},
+    beatmap:{},
+}
+let N=0
+let MatchName=null
+let End=false
+const MatchResult={}
+const MatchOrder=[]
+const MatchResultRank=[]
+const Beatmap={  // {username,bid,mod,award}
+    host:[],
+    player:[]
+}
+const Match={
+    data:[],
+    lastText:null,
+    monitor:async function() {
+        const res = await getOsuData()
+        let update = null
+        try{
+            asserts(!res.error)
+            asserts(res.text!=Match.lastText)
+            asserts(res.data.games)
+            Match.data=res.data.games
+            Match.lastText=res.text
+            update=currentStage.score.update
+        }catch{}
+        if(update)update()
+    },
+    start:function(){
+        setInterval(Match.monitor,retryWaitingTime)
+    },
+}
+const Uid2Uasername={}
+
 // 主流程
-if(0){
-    window.onbeforeunload=()=>true
+const PlayerDom={}
+const RemainingPlayer=[]
+const RemainingBeatmap={
+    host:[],
+    player:[]
+}
+let order=null
+const Progress={
+    round:null,
+    game:null,
+    next:function(){
+        for(let x in MatchResult){
+            MatchResult[x].currentPoints=Config.totalPointsFunction(MatchResult[x])
+            PlayerDom[x].scorePoints.textContent=format(MatchResult[x].currentPoints/Config.constCoef,0,Config.pointsDecimals)
+        }
+
+        if(Progress.round===null){
+            Progress.round=Progress.game=0
+        } else if(Progress.game===null) {
+            Progress.round+=1
+            Progress.game=0
+        } else {
+            Progress.game+=1
+            if(Progress.game>=Order[Progress.round].game.length){
+                Progress.game=null
+                if(Progress.round+1==Order.length)End=true
+            }
+        }
+
+        if(Progress.game===null){
+            currentStage=StageE
+            stage.textContent=`结算阶段${Progress.round+1}`
+        }else{
+            currentStage=StageG
+            stage.textContent=`比赛阶段${Progress.round+1}-${Progress.game+1}`
+        }
+
+        reRank()
+        
+        clearElement(scoreboard)
+        scoreboard.appendChild(scoreboardHeader)
+        for(let x of MatchResultRank)scoreboard.appendChild(PlayerDom[x.username].score)
+
+        saveCache({
+            timestamp:Date.now(),
+            OsuData,
+            MatchResult:MatchResultRank,
+            MatchOrder,
+            MatchName,
+            Beatmap,
+            Progress:{round:Progress.round,game:Progress.game},
+            Config:{
+                modMultiply:Config.modMultiply,constCoef:Config.constCoef,pointsDecimals:Config.pointsDecimals,
+                showFixed: Config.showFixed,showAward:Config.awardMultiply!=1,End
+            },
+        })
+
+        order=Order[Progress.round]
+        currentStage.init()
+    }
+}
+function reRank(){
+    MatchResultRank.sort(Config.rankFunction)
+    for(let i in MatchResultRank)
+        PlayerDom[MatchResultRank[i].username].score.querySelector('.rank').textContent=MatchResultRank[i].rank=Number(i)+1
+}
+function writeCMD(cmd){
+    clearElement(cmdTable)
+    cmd.forEach((c) => {
+        cmdTable.innerHTML+=`<div onclick="copyText(this)" title="${c}">${c}</div>`
+    })
+}
+
+// 准备阶段
+const StageP={
+    updateMID:function(element){
+            async function checkMatch(){
+                let {error,data}=await getOsuData('match',mid)
+                let class_='pending'
+                let title=null
+                try{
+                    asserts(data.match.name)
+
+                    MatchName=data.match.name
+                    
+                    let text=[]
+
+                    if(!data.match.name.startsWith(TOURNAMENT)){
+                        text.push(`房间名为${data.match.name}，没有以${TOURNAMENT}开头`)
+                    }
+                    
+                    let t=new Date(data.match.start_time+'Z')
+                    if(Date.now()-t.getTime()>30*60*1000) {
+                        text.push(`开始时间${t.toLocaleString().replace(/\//g,'-')}，距离当前时刻很久`)
+                    }
+
+                    if(text.length){
+                        class_='warning'
+                        title=`当前所选择的房间${mid}的${text.join('，且其')}，这真的是本场比赛的房间吗？`
+                    } else {
+                        class_='checked'
+                    }
+                }catch{
+                    if(error){
+                        title=error
+                    }else{
+                        title='没有找到这场比赛'
+                        class_='error'
+                    }
+                }
+                if(MID!=mid)return
+                if(title)element.title=title
+                element.className=class_
+                if(class_=='pending')setTimeout(checkMatch,retryWaitingTime)
+            }
+
+            let x=element.value
+            let mid=null
+            if(x){
+                x=x.trim().split('/')
+                if(x.length==1){
+                    x=x[0]
+                } else {
+                    x=x[x.length-1]?x[x.length-1]:x[x.length-2]
+                }
+                if(/^\d+$/.test(x)){
+                    mid=x.trim()
+                }
+            }
+
+            if(MID!=mid){
+                element.className='pending'
+                element.removeAttribute('title')
+                MID=mid
+                if(mid)checkMatch()
+            }
+        },
+    add:function(){
+        let alertText=[]
+        for(let raw of mainConsole.querySelector('textarea').value.split('\n')){
+            raw=raw.trim()
+            if(!raw)continue
+            let line=[]
+            for(let x of raw.split('\t'))line.push(x.trim())
+            let m={}
+            let modAll=''
+            if(/^\d+$/.test(line[1])){
+                m.username=line[0]
+                m.bid=line[1]
+                modAll=line.slice(2).join('')
+                m.checked=false
+            } else if(/^\d+$/.test(line[0])){
+                m.username=''
+                m.bid=line[0]
+                modAll=line.slice(1).join('')
+                m.checked=true
+            } else {
+                alertText.push(`该行格式错误：“${raw.replaceAll('\t',' | ')}”`)
+                continue
+            }
+            modAll=modAll.toLocaleUpperCase()
+            let modS=new Set()
+            let modF=new Set()
+            let modA=new Set()
+            let modSet=new Set()
+            while(modAll){
+                modSet.add(modAll.slice(0,2))
+                modAll=modAll.slice(2)
+            }
+            for(let x of modSet){
+                switch(x) {
+                    case 'DT':
+                    case 'NC':
+                    case 'HT':
+                        modS.add(x)
+                        break
+                    case 'EZ':
+                    case 'HR':
+                        modF.add(x)
+                        break
+                    case 'HD':
+                    case 'FL':
+                    case 'SO':
+                        modA.add(x)
+                        break
+                    case 'NM':
+                    case 'V2':
+                    case 'NF':
+                        break
+                    default:
+                        alertText.push(`该行MOD或格式错误：“${raw.replaceAll('\t',' | ')}”`)
+                        continue
+                }
+            }
+            if(modS.size>1||modF.size>1){
+                alertText.push(`该行MOD或格式错误：“${raw.replaceAll('\t',' | ')}”`)
+                continue
+            }
+            if(m.username&&StageP.table.playerSet.has(m.username)){
+                alertText.push(`该用户已在表中：“${m.username}”`)
+                continue
+            }
+            if(StageP.table.mapSet.has(m.bid)){
+                alertText.push(`该图已在表中：“${m.bid}”`)
+                continue
+            }
+            m.mod=[...modS].join('')||'NM'
+            const awardMods=[...modA].concat([...modF])
+            awardMods.sort()
+            m.award=(awardMods.join(''))||'NM'
+            if(m.username)StageP.table.player.push(m)
+            else StageP.table.host.push(m)
+        }
+        mainConsole.querySelector('textarea').value=''
+        alertText=alertText.join('\n')
+        if(alertText)alert(alertText)
+        StageP.refresh()
+    },
+    clear:function(){
+        if(!confirm('这将清空左侧全部内容，你确定要这样做吗？'))
+        StageP.table.host.length=0
+        StageP.table.player.length=0
+        StageP.refresh()
+    },
+    check:function(element){
+        let tr=element.closest('tr')
+        let type=tr.getAttribute('data-type')
+        let id=tr.getAttribute('data-id')
+        if(type!='player')return
+        if(StageP.table[type][id].checked=!StageP.table[type][id].checked){
+            element.textContent='✔️'
+            tr.classList.remove('waiting')
+        }else{
+            element.textContent='⏳'
+            tr.classList.add('waiting')
+        }
+    },
+    delete:function(element){
+        let tr=element.closest('tr')
+        let type=tr.getAttribute('data-type')
+        let id=tr.getAttribute('data-id')
+        StageP.table[type].splice(id,1)
+        StageP.refresh()
+    },
+    refresh(){
+        function addMap({username,bid,mod,award,checked}){
+            text.push(`<tr data-type="${username?'player':'host'}" data-id="${i++}"${checked?'':' class="waiting"'}">
+    <td${(username&&OsuData.user[username]===-1)?' class="username error" title="没有找到该玩家"':' class="username"'}>${username||('固定图'+i)}</td>
+    <td${(OsuData.beatmap[bid]===-1)?' class="bid error" title="没有找到该图"':' class="bid"'}>${bid}</td>
+    <td class="mod">${mod}</td>
+    <td class="award">${award}</td>
+    <td class="button"><button onclick="StageP.check(this)" class="blue small"${username?'':' disabled'}>${checked?'✔️':'⏳'}</button></td>
+    <td class="button"><button onclick="StageP.delete(this)" class="red small">🗑️</button></td>
+</tr>`)
+
+            if(!(bid in OsuData.beatmap)){
+                newMap.push(bid)
+                OsuData.beatmap[bid]=null
+            }
+            if(username&&!(username in OsuData.user)){
+                newUser.push(username)
+                OsuData.user[username]=null
+            }
+            StageP.table.mapSet.add(bid)
+            if(username){
+                StageP.table.playerSet.add(username)
+                cmd.push('!MP INVITE '+username)
+            }
+        }
+        let text=[]
+        let newMap=[]
+        let newUser=[]
+        let cmd=[`!MP MAKE ${TOURNAMENT}: (房间)`,'!MP SET 2 3','!MP ADDREF','!MP SETTINGS']
+        StageP.table.mapSet=new Set()
+        StageP.table.playerSet=new Set()
+
+        let i=0
+        for(let map of StageP.table.host)addMap(map)
+        i=0
+        for(let map of StageP.table.player)addMap(map)
+
+        clearElement(mainTable)
+        mainTable.innerHTML=text.join('\n')
+        writeCMD(cmd)
+
+        newMap.forEach((bid, i) => {
+            async function f() {
+                if(!StageP.table.mapSet.has(bid)){
+                    delete OsuData.beatmap[bid]
+                    return
+                }
+                let {error,data}=await getOsuData('beatmaps',bid)
+                if(error){
+                    setTimeout(f, retryWaitingTime)
+                } else {
+                    if(data.length){
+                        OsuData.beatmap[bid]=data[0]
+                    } else {
+                        OsuData.beatmap[bid]=-1
+                        StageP.refresh()
+                    }
+                }
+            }
+            setTimeout(f, i * nextRequestTime)
+        })
+        newUser.forEach((username, i) => {
+            async function f() {
+                if(!StageP.table.playerSet.has(username)){
+                    delete OsuData.user[username]
+                    return
+                }
+                let {error,data}=await getOsuData('user',username)
+                if(error){
+                    setTimeout(f, retryWaitingTime)
+                } else {
+                    if(data.length&&data[0].username.toLocaleUpperCase()==username.toLocaleUpperCase()){
+                        OsuData.user[username]=data[0]
+                    } else {
+                        OsuData.user[username]=-1
+                        StageP.refresh()
+                    }
+                }
+            }
+            setTimeout(f, i * nextRequestTime)
+        })
+    },
+    table:{
+        host:[],
+        player:[],
+        mapSet:new Set(),
+        playerSet:new Set(),
+    },
+    nextStage:function(){
+        let flag=false
+        Beatmap.host.length=0
+        Beatmap.player.length=0
+
+        function verify({username,bid,mod,award,checked}){
+            if(!checked)return false
+            
+            if(username){
+                let u=OsuData.user[username]
+                if(!u){
+                    flag=true
+                } else if(u===-1){
+                    alert('有选手出现错误（高亮红字），请先删除这些错误的项目再继续。')
+                    return true
+                }
+                
+                Beatmap.player.push({username,bid,mod,award})
+            } else {
+                Beatmap.host.push({username,bid,mod,award})
+            }
+
+            let b=OsuData.beatmap[bid]
+            if(!b){
+                flag=true
+            } else if(b===-1){
+                alert('有图出现错误（高亮红字），请先删除这些错误的项目再继续。')
+                return true
+            }
+            return false
+        }
+
+        for(let x of StageP.table.host){
+            if(verify(x))return
+        }
+        for(let x of StageP.table.player){
+            if(verify(x))return
+        }
+
+        if(flag){
+            alert('部分图或选手信息还在获取中，请稍后重试。如果左侧工具栏出现叹号，请先解决相应问题。')
+            return
+        }
+
+        Order=Config.order(Beatmap.player.length)
+        if(!Order){
+            alert(`不支持当前的玩家数量：${Beatmap.player.length}。\n请检查图池与选手配置是否正确，以及是否正确签到。`)
+            return
+        }
+
+        let n=0
+        for(let x of Order)n+=x.game.length
+        if(n!==Beatmap.player.length+Beatmap.host.length){
+            alert(`当前的玩家数量是${Beatmap.player.length}，应有${n-Beatmap.player.length}张固定图，但实际有${Beatmap.host.length}张。\n请检查图池与选手配置是否正确，以及是否正确签到。`)
+            return
+        }
+
+        
+        switch(mainConsole.querySelector('input').className){
+            case 'warning':
+                if(!confirm(mainConsole.querySelector('input').title))return
+                break
+            case 'checked':
+                break
+            case 'error':
+                alert('房间出现错误（高亮红字），请检查MPLink或MatchID是否正确。')
+                return
+            case 'pending':
+                alert('房间信息还在获取中，请稍后重试。如果左侧工具栏出现叹号，请先解决相应问题。')
+                return
+            default:
+                alert('请先在右侧填入房间信息。')
+                return
+        }
+        
+        if(!confirm(StageP.table.player==Beatmap.player.length?
+        `你确定要进入下阶段吗？此操作不可逆。\n配置中共有${StageP.table.player.length}名玩家，其中${Beatmap.player.length}人已签到，${StageP.table.player.length-Beatmap.player.length}人未签到。\n未签到的玩家将无法参与游戏。`:
+        `你确定要进入下阶段吗？此操作不可逆。\n配置中共有${StageP.table.player.length}名玩家，全部玩家均已签到。`)) return
+
+        let lastR=Beatmap.player.length
+        for(let i in Order){
+            Order[i].playerStart=lastR
+            lastR=Order[i].playerEnd
+        }
+
+        window.onbeforeunload=()=>true
+        
+        RemainingBeatmap.host=[...Beatmap.host]
+        RemainingBeatmap.player=[...Beatmap.player]
+
+        let i=1
+        for(let x of RemainingBeatmap.host){
+            x.host=i++
+        }
+
+        function createPlayerDom(username){
+            N++
+            const main=document.createElement('tr')
+            main.className='persistence'
+            main.innerHTML=`
+<td class="username" title="${username}">${username}</td>
+<td class="raw_score"><input type="number"></td>
+<td class="mod"><input></td>
+<td class="score"></td>
+`
+            const [mainInputS,mainInputM]=main.querySelectorAll('input')
+            mainInputS.addEventListener('change', () =>{
+                StageG.score.change(username)
+            })
+            mainInputM.addEventListener('change', () =>{
+                StageG.score.change(username)
+            })
+            const score=document.createElement('tr')
+            score.className='persistence'
+            score.innerHTML=`
+<td class="rank"></td>
+<td class="username" title="${username}">${username}</td>
+<td class="button"><button onclick="copyText(null,'!MP INVITE ${username}')" class="blue small">👋</button></td>
+<td class="button"><button onclick="copyText(null,'!MP KICK ${username}')" class="red small">🚫</button></td>
+<td class="points"></td>
+`
+            return {main,mainInputS,mainInputM,mainScore:main.querySelector('.score'),score,scorePoints:score.querySelector('.points')}
+        }
+        for(let x of Beatmap.player){
+            x=x.username
+            const y={
+                username:x,
+                alive:true,
+                score:[],
+                points:[],
+                currentPoints:0,
+                rank:null
+            }
+            MatchResult[x]=y
+            MatchResultRank.push(y)
+            PlayerDom[x]=createPlayerDom(x)
+            RemainingPlayer.push(x)
+            Uid2Uasername[OsuData.user[x].user_id]=x
+        }
+        scoreboardHeader.innerHTML=`
+<td class="rank">#</td>
+<td class="username">玩家</td>
+<td class="button" title="复制该玩家的邀请命令">邀</td>
+<td class="button" title="复制该玩家的踢出命令">踢</td>
+<td class="points" title="当前轮次总积分">积分</td>
+`
+        mainTableBanner.style.height='35px'
+        Match.start()
+        Progress.next()
+    }
+}
+const StageG={
+    init:function(){
+        StageG.map=null
+        StageG.optionalMap.length=0
+
+        let mapText=null
+        switch(order.game[Progress.game]){
+            case 'p':
+                StageG.optionalMap=[...RemainingBeatmap.player]
+                if(StageG.optionalMap.length>1){
+                    mapText='使用随机自选图，以下将roll点决定本局赛图。'
+                }else{
+                    mapText='使用随机自选图。此类图仅剩一张，将直接使用该图。'
+                    StageG.map=StageG.optionalMap[0]
+                }
+            case 'h':
+                StageG.optionalMap=[...RemainingBeatmap.host]
+                if(StageG.optionalMap.length>1){
+                    mapText='使用随机固定图，以下将roll点决定本局赛图。'
+                }else{
+                    mapText='使用随机固定图。此类图仅剩最后一张，将直接使用该图。'
+                    StageG.map=StageG.optionalMap[0]
+                }
+            case 'o':
+                mapText='按顺序使用固定图。'
+                StageG.optionalMap=[RemainingBeatmap.host[0]]
+                StageG.map=StageG.optionalMap[0]
+            case 'a':
+                StageG.optionalMap=[...RemainingBeatmap.host].concat([...RemainingBeatmap.player])
+                if(StageG.optionalMap.length>1){
+                    mapText='以下将roll点决定本局赛图。'
+                }else{
+                    mapText='仅剩最后一张赛图，将直接使用该图。'
+                    StageG.map=StageG.optionalMap[0]
+                }
+        }
+        StageG.cmd.part0=[
+            `正在进行第${Progress.round+1}/${Order.length}轮，`+
+            (order.playerEnd?
+                `当前存活${order.playerStart}名玩家，本轮结束后将淘汰${order.playerStart-order.playerEnd}名玩家。`:
+                `本轮是最终轮，剩余${order.playerStart}名玩家将共同决出本场比赛的冠军。`
+            ),
+            `本局是本轮的第${Progress.game+1}/${order.game.length}局，${mapText}`
+        ]
+        if(!StageG.map){
+            StageG.cmd.part0.push(`!MP ROLL ${StageG.optionalMap.length}`)
+            StageG.optionalMap=[null].concat([...StageG.optionalMap])
+        }
+
+        let selectMapText=[]
+        for(let x of StageG.optionalMap){
+            let text=''
+            if(x){
+                text=`${'&ensp;'.repeat(7-x.bid.length)}${x.bid} （${x.username?x.username:('固定图'+x.host)}）`
+            } else {
+                text='（请选择）'
+            }
+            selectMapText.push(`    <option>${text}</option>`)
+        }
+        
+        clearElement(mainTable)
+        clearElement(mainConsole)
+        clearElement(mainTableBanner)
+        mainTableBanner.innerHTML=`
+<input style="float:left;margin:0 5px 0 3px" type="checkbox" checked onchange="if(this.checked)StageG.score.refresh()"><div style="line-height:30px;float:left">自动获取分数</div>
+<div style="float:right;padding-right:1px;">
+    <button class="yellow" onclick="StageG.score.refresh()">重置分数</button>
+    <button class="red" onclick="StageG.score.clear()">清空分数</button>
+</div>
+`
+        for(let x of RemainingPlayer){
+            mainTable.appendChild(PlayerDom[x].main)
+        }
+        mainConsole.innerHTML=`
+<div${StageG.map?' class="waiting"':''}>roll点结果：<span style="user-select:none"
+title="当你输入或更改roll点结果时，本局赛图会自动更改为roll点对应的图。
+但你也可以直接修改本局赛图。">❓</span></div>
+<input onchange="StageG.changeRoll(this)" type="number" step="1" min="1" max="${StageG.optionalMap.length-1}"${StageG.map?' disabled':''}>
+<div>本局赛图：</div>
+<select data-last="" onchange="StageG.changeMap(this)"${StageG.map?' disabled':''}>
+${selectMapText.join('\n')}
+</select>
+<div>当该局进行完毕之后，左侧表格会自动获取选手分数。如果有必要，你也可以直接修改选手分数。<span style="user-select:none"
+title="只有打开“自动获取分数”时才会自动获取分数，且自动获取到的分数会覆盖掉手动获取的分数。">❓</span></div>
+<div>进入下阶段后，总分数表才会更新，请在确认分数无误后尽快进入下阶段以让直播员可以展示总分数表。</div>`
+        StageG.score.hasUpdated=false
+        StageG.score.default={}
+        StageG.cmd.refresh()
+        StageG.changeMap()
+    },
+    map:null,
+    optionalMap:[],
+    changeRoll:function(element){
+        let value=element.value.trim()
+        if(!/^\d+$/.test(value)||Number(value)<=0||Number(value)>=StageG.optionalMap.length){
+            element.className='error'
+            return
+        }
+        element.className=''
+        element=mainConsole.querySelector('select')
+        element.selectedIndex=value
+        StageG.changeMap(element)
+    },
+    changeMap:function(element=null){
+        if(StageG.score.hasUpdated&&!confirm('您确定要更换赛图吗？这将清除左侧的所有分数。')){
+            element.selectedIndex=element.dataset.last
+            return
+        }
+
+        if(element){
+            element.dataset.last=element.selectedIndex
+            StageG.map=StageG.optionalMap[element.selectedIndex]
+            StageG.cmd.refresh()
+        }
+        StageG.score.clear()
+        StageG.score.update()
+    },
+    cmd:{
+        part0:[],
+        refresh:function(){
+            let cmd=StageG.cmd.part0
+            if(StageG.map){
+                let x=StageG.map.username?
+                    `选手${StageG.map.username}所选图：${StageG.map.bid}${StageG.map.mod=='NM'?'':('+'+StageG.map.mod)}`:
+                    `固定图${StageG.map.host}：${StageG.map.bid}${StageG.map.mod=='NM'?'':('+'+StageG.map.mod)}`
+                if(Config.awardMultiply!=1){
+                    x+=`，奖励MOD组合为${StageG.map.award}，使用该MOD组合将获得${Config.awardMultiply}倍分数`
+                }
+                cmd=cmd.concat([
+                    `本局图为${x}。`,
+                    `!MP MAP ${StageG.map.bid}`,
+                    `!MP MODS ${StageG.map.mod=='NM'?'':StageG.map.mod} NF FreeMod`,
+                    '!MP SETTINGS',
+                    '!MP START 7',
+                ])
+            }
+            writeCMD(cmd)
+        },
+    },
+    score:{
+        hasUpdated:false,
+        clear:function(){
+            for(let x of RemainingPlayer){
+                const dom=PlayerDom[x]
+
+                dom.mainInputS.value=
+                dom.mainInputS.className=
+                dom.mainInputM.value=
+                dom.mainInputM.className=
+                dom.mainScore.dataset.award=''
+
+                dom.mainScore.textContent='0'
+                dom.mainScore.classList.remove('warning')
+
+                dom.mainInputS.disabled=dom.mainInputM.disabled=StageG.map?false:true
+            }
+            if(StageG.score.hasUpdated)
+                mainTableBanner.querySelector('input').checked=StageG.score.hasUpdated=false
+        },
+        update:function(){
+            StageG.score.default={}
+            if(!StageG.map)return
+            let data=null
+            for(let i=Match.data.length-1;i>=0;i--){
+                const x=Match.data[i]
+                if(!x.scores.length)continue
+                if(StageG.map.bid==x.beatmap_id){
+                    data=x
+                    break
+                }
+            }
+            if(data){
+                const modsNumAll=Number(data.mods)||0
+                StageG.score.default={}
+                for(let x of data.scores){
+                    const {user_id,enabled_mods,score}=x
+                    const modsNum=(Number(enabled_mods)||0)|modsNumAll
+                    const mods=[]
+                    for(let m in ModsNumDict)
+                        if(modsNum&ModsNumDict[m])mods.push(m)
+                    StageG.score.default[Uid2Uasername[user_id]]={score,mods:mods.join('') || 'NM'}
+                }
+                if(!mainTableBanner.querySelector('input').checked)return
+                mainTableBanner.querySelector('input').checked=false
+                StageG.score.refresh()
+            }
+            
+        },
+        refresh:function(){
+            let flag=false
+            for(let x of RemainingPlayer){
+                const dom=PlayerDom[x]
+                if(StageG.score.default[x]){
+                    const ds=StageG.score.default[x]
+                    dom.mainInputS.value=ds.score
+                    dom.mainInputM.value=ds.mods
+                    StageG.score.change(x)
+                    flag=true
+                }else{
+                    dom.mainInputS.value=
+                    dom.mainInputS.className=
+                    dom.mainInputM.value=
+                    dom.mainInputM.className=
+                    dom.mainScore.dataset.award=''
+
+                    dom.mainScore.textContent='0'
+                    dom.mainScore.classList.remove('warning')
+
+                    dom.mainInputS.disabled=dom.mainInputM.disabled=StageG.map?false:true
+                }
+            }
+            StageG.score.hasUpdated=flag
+        },
+        change:function(username){
+            const dom=PlayerDom[username]
+            let flag=false
+            let rscore=format(dom.mainInputS.value) || ''
+            dom.mainInputS.value=rscore
+            try{
+                asserts(StageG.score.default[username].score==rscore)
+                dom.mainInputS.classList.remove('warning')
+            }catch{
+                dom.mainInputS.classList.add('warning')
+                flag=true
+            }
+            let modAll=dom.mainInputM.value.trim().toLocaleUpperCase()
+            let modS=''
+            let modF=''
+            let modA=new Set()
+            let modSet=new Set()
+            while(modAll){
+                modSet.add(modAll.slice(0,2))
+                modAll=modAll.slice(2)
+            }
+            for(let x of modSet){
+                switch(x) {
+                    case 'NC':
+                        modS='DT'
+                        break
+                    case 'DT':
+                    case 'HT':
+                        modS=x
+                        break
+                    case 'EZ':
+                    case 'HR':
+                        modF=x
+                        break
+                    case 'HD':
+                    case 'FL':
+                    case 'SO':
+                        modA.add(x)
+                        break
+                    case 'NM':
+                    case 'V2':
+                    case 'NF':
+                        break
+                }
+            }
+            const mods=[...modA]
+            if(modF)mods.push(modF)
+            mods.sort()
+            let award=((mods.join(''))||'NM')==StageG.map.award&&Config.awardMultiply!=1
+            if(modS)mods.push(modS)
+            mods.sort()
+            dom.mainInputM.value=(mods.join(''))||'NM'
+            try{
+                asserts(StageG.score.default[username].mods==dom.mainInputM.value)
+                dom.mainInputM.classList.remove('warning')
+            }catch{
+                dom.mainInputM.classList.add('warning')
+                flag=true
+            }
+            if(flag)dom.mainScore.classList.add('warning')
+            else dom.mainScore.classList.remove('warning')
+            let score=Number(rscore)||0
+            for(let x of mods){
+                if(x in Config.modMultiply)score*=Config.modMultiply[x]
+            }
+            if(award){
+                score*=Config.awardMultiply
+                dom.mainScore.dataset.award=1
+            }else{
+                dom.mainScore.dataset.award=''
+            }
+            dom.mainScore.textContent=format(score)
+        },
+        default:{},
+    },
+    nextStage:function(){
+        if(!StageG.map){
+            alert('你还没有选择本局的赛图')
+            return
+        }
+        const blanket=[]
+        const notDefault=[]
+        for(let x of RemainingPlayer){
+            if(PlayerDom[x].mainScore.textContent=='0') blanket.push(x)
+            else if(PlayerDom[x].mainScore.classList.contains('warning'))notDefault.push(x)
+        }
+        if(!confirm(`你确定要进入下阶段吗？此操作不可逆。\n本局赛图是${StageG.map.bid} （${StageG.map.username||('固定图'+StageG.map.host)}）。`))return
+        if(blanket.length||notDefault.length){
+            let text='请着重检查以下信息并再次确认：'
+            if(blanket.length)text+=`\n以下玩家没有成绩，将被记为0分：${blanket.join('、')}。`
+            if(notDefault.length)text+=`\n以下玩家成绩被手动修改，与自动获取到的不同：${notDefault.join('、')}。`
+            if(!confirm(text))return
+        }
+
+        const result={}
+        const resultSort=[]
+        {
+            let sum=0
+
+            for(let x of RemainingPlayer){
+                result[x]={
+                    round:Progress.round+1,
+                    game:Progress.game+1,
+                    score:Number(PlayerDom[x].mainScore.textContent),
+                    award:Boolean(PlayerDom[x].mainScore.dataset.award),
+                    rscore:Number(PlayerDom[x].mainInputS.value),
+                    mods:PlayerDom[x].mainInputM.value,
+                }
+                sum+=result[x].score
+                resultSort.push(result[x])
+            }
+
+            const avg=sum/RemainingPlayer.length
+            sum=0
+            for(let x in result)
+                sum+=(result[x].score-avg)**2
+            
+            const recStd=sum?((RemainingPlayer.length/sum)**0.5):1
+            for(let x in result)
+                result[x].zscore=(result[x].score-avg)*recStd
+        }
+
+        resultSort.sort((x,y)=>{return y.score-x.score})
+        {
+            let i = 0
+            while (i < resultSort.length) {
+                let j = i
+                while(j + 1 < resultSort.length && resultSort[j + 1].score == resultSort[i].score) j++
+                
+                const avgRank = (i+j)/2 +1
+                for(let k = i; k <= j; k++) resultSort[k].rank = avgRank
+                
+                i = j + 1
+            }
+        }
+        
+        for(let i in resultSort){
+            resultSort[i].points=Config.pointsFunction(resultSort[i].rank,RemainingPlayer.length)
+        }
+        for(let x of RemainingPlayer){
+            MatchResult[x].score.push(result[x])
+            const td=document.createElement('td')
+            td.className='game_points'
+            td.textContent=`${result[x].rank}`
+            td.title=`${Progress.round+1}-${Progress.game+1} ${x}
+成绩：${result[x].score}
+排名：${result[x].rank}
+积分：${result[x].points/Config.constCoef}
+
+成绩详情
+Z分数：${result[x].zscore}
+原始分数：${result[x].rscore}
+Mods：${result[x].mods}
+奖励：${result[x].award?'是':'否'}`
+            PlayerDom[x].score.appendChild(td)
+        }
+        {
+            const td=document.createElement('td')
+            td.className='game_points'
+            td.textContent=`${Progress.round+1}-${Progress.game+1}`
+            td.title=`${StageG.map.bid} （${StageG.map.username||('固定图'+StageG.map.host)}）\nMods：${StageG.map.mod}\n奖励：${StageG.map.award}`
+            scoreboardHeader.appendChild(td)
+        }
+        {
+            MatchOrder.push({round:Progress.round+1,game:Progress.game+1,map:StageG.map})
+            const changingRemainingBeatmap=StageG.map.username?RemainingBeatmap.player:RemainingBeatmap.host
+            for(let i=0;i<changingRemainingBeatmap.length;i++){
+                if(changingRemainingBeatmap[i]==StageG.map){
+                    changingRemainingBeatmap.splice(i, 1)
+                    break
+                }
+            }
+        }
+
+        Progress.next()
+    },
+}
+const StageE={
+    init:function(){
+        clearElement(mainTable)
+        clearElement(mainConsole)
+        clearElement(mainTableBanner)
+        mainTableBanner.innerHTML=`请选择本轮要淘汰的选手：<div style="float:right;padding-right:1px;">
+    <button class="yellow" onclick="StageE.refresh()">重置选择</button>
+</div>`
+        StageE.cmd.part0=[
+            `第${Progress.round+1}/${Order.length}轮已结束，现在进入结算阶段。`+
+            (order.playerEnd?
+                `当前存活${order.playerStart}名玩家，现在需要淘汰${order.playerStart-order.playerEnd}名玩家。`:
+                `本轮是最终轮，按照当前的成绩确定名次。`
+            )
+        ]
+        StageE.default.length=0
+        let optionHtml=''
+        for(let x of RemainingPlayer){
+            optionHtml+=`<option value="${x}">${x}</option>`
+        }
+        for(let i=(Order[Progress.round].playerEnd||0)+1;i<=RemainingPlayer.length;i++){
+            const tr=document.createElement('tr')
+            tr.innerHTML=`<td class="eliminateRank">第${i}名：</td>
+<td class="eliminateSelect"><select onchange="StageE.changePlayer(${i},this)">${optionHtml}</select></td>`
+            mainTable.appendChild(tr)
+            StageE.default[i]={element:tr.querySelector('select'),value:MatchResultRank[i-1].username}
+        }
+        StageE.refresh()
+        StageE.cmd.refresh()
+        mainConsole.innerHTML=order.playerEnd?
+`<div>本轮要淘汰的选手有${RemainingPlayer.length-Order[Progress.round].playerEnd}位。系统会自动选中分数当前存活选手中积分最低几位，但如果有选手主动要求离场，你也可以手动更改。</div>
+<div>建议人工检查一下淘汰选手及名次是否正确，特别是积分出现并列情况时。</div>`:
+`<div>本轮是最终轮，确定全部剩余名次。建议人工检查一下全部名次是否正确，特别是积分出现并列情况时。</div>
+<div>比赛结束后请立即打开直播展示页面（点击左侧第四个按钮），并在直播展示页面点击ctrl+s以保存最终结果（一定要使用快捷键，和右键保存网页有所区别；正确的效果应该等同于下载，下载获得的是单html文件）。</div>
+<div style="color: #aaa;">通常来说最终名次不需要手动更改（不会因为有人离场而剥夺其名次），如果真的出现这种情况，导致上述保存的页面名次错误，请联系裁判表作者。</div>`
+    },
+    default:[],
+    refresh:function(){
+        for(let i in StageE.default)
+            if(StageE.default[i])StageE.changePlayer(i,StageE.default[i].element,StageE.default[i].value)
+    },
+    changePlayer:function(i,element,value=null){
+        if(value)element.value=value
+        if(StageE.default[i].value==element.value) element.classList.remove('warning')
+        else element.classList.add('warning')
+    },
+    cmd:{
+        part0:[],
+        refresh:function(){
+            let cmd=StageE.cmd.part0
+            if(order.playerEnd){
+                const {eliminate}=StageE.getEliminate()
+                cmd=cmd.concat([
+                    `本轮被淘汰的选手为：${eliminate.join('、')}，祝他们下次好运。`,
+                ])
+            }else{
+                cmd=cmd.concat([
+                    `恭喜选手${StageE.default[1].element.value}获得本场比赛的冠军，也感谢其他所有参与的选手。`,
+                ])
+            }
+            writeCMD(cmd)
+        },
+    },
+    getEliminate:function(){
+        let flag=false
+        const has=new Set()
+        const eliminate=[]
+        const notDefault=[]
+        for(let x of StageE.default)if(x){
+            const value=x.element.value
+            if(has.has(value))flag=true
+            else has.add(value)
+            eliminate.push(value)
+            if(x.value!=value)notDefault.push(value)
+        }
+        return {eliminate,notDefault,flag}
+    },
+    nextStage:function(){
+        if(!order.playerEnd){
+            alert('已经结束嘞!')
+            return
+        }
+        const {eliminate,notDefault,flag}=StageE.getEliminate()
+        if(flag){
+            alert('你选择了重复的被淘汰玩家，请先更正。')
+            return
+        }
+        if(!confirm(`你确定要进入下阶段吗？此操作不可逆。\n本轮淘汰的选手为${eliminate.join('、')}`))return
+        if(notDefault.length&&!confirm(`以下选手与系统自动选中的顺序不一致，请再次确认：\n${notDefault.join('、')}`))return
+
+        for(let i in StageE.default){
+            const x=MatchResult[StageE.default[i].element.value]
+            x.rank=i
+            x.alive=false
+            PlayerDom[StageE.default[i].element.value].score.querySelector('.username').classList.add('eliminate')
+            PlayerDom[StageE.default[i].element.value].score.querySelector('.rank').classList.add('eliminate')
+        }
+        reRank()
+        for(let x of RemainingPlayer){
+            const result={
+                round:Progress.round+1,
+                points:MatchResult[x].currentPoints,
+                rank:MatchResult[x].rank,
+                eliminate:!MatchResult[x].alive
+            }
+            MatchResult[x].points.push(result)
+            MatchResult[x].score.push(result)
+            const td=document.createElement('td')
+            td.className='points'
+            td.innerHTML=`${format(result.points/Config.constCoef,0,Config.pointsDecimals)}`
+            td.title=`${result.points/Config.constCoef}`
+            PlayerDom[x].score.appendChild(td)
+        }
+        {
+            const td=document.createElement('td')
+            td.className='points'
+            td.innerHTML=`第${Progress.round+1}轮`
+            scoreboardHeader.appendChild(td)
+        }
+        RemainingPlayer.length=0
+        for(let x in MatchResult){
+            if(MatchResult[x].alive)RemainingPlayer.push(x)
+        }
+        MatchOrder.push({round:Progress.round+1})
+
+        Progress.next()
+    },
+}
+
+let currentStage=StageP
+const ModsNumDict={
+    EZ: 2,
+    HD: 8,
+    HR: 16,
+    SD: 32,
+    DT: 64,
+    HT: 256,
+    FL: 1024,
+}
+
+// 工具
+function format(x,digit=0,decimals=0,addition=''){
+    if(addition=='%')x*=100
+    x=Math.round((x * (10 ** decimals)) + 1e-10)
+    let flag=false
+    if(x<0){
+        x=-x
+        flag=true
+    }
+    x=x.toString()
+    if(decimals&&x.length<=decimals)x='0'.repeat(decimals+1-x.length)+x
+    if(flag)x='-'+x
+    if(x.length<digit)x=' '.repeat(digit-x.length)+x
+    if(decimals)x=x.slice(0, x.length - decimals) + '.' + x.slice(x.length - decimals)
+    return x+addition
 }
 </script>
 </body>

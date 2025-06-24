@@ -1,0 +1,803 @@
+<html>
+<head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2220 0 100 100%22><text y=%22.8em%22 font-size=%22100%22>📊</text></svg>">
+    <meta charset="utf-8">
+    <title id="h0">MP5吃鸡直播展示页面</title>
+<style>
+@font-face {
+  font-family: 'osu';
+  font-weight: 100;
+  src: url('https://mp5tournament.github.io/assets/Torus-Thin.otf');
+}
+@font-face {
+  font-family: 'osu';
+  font-weight: 300;
+  src: url('https://mp5tournament.github.io/assets/Torus-Light.otf');
+}
+@font-face {
+  font-family: 'osu';
+  font-weight: 400;
+  src: url('https://mp5tournament.github.io/assets/Torus-Regular.otf');
+}
+@font-face {
+  font-family: 'osu';
+  font-weight: 600;
+  src: url('https://mp5tournament.github.io/assets/Torus-SemiBold.otf');
+}
+@font-face {
+  font-family: 'osu';
+  font-weight: 700;
+  src: url('https://mp5tournament.github.io/assets/Torus-Bold.otf');
+}
+@font-face {
+  font-family: 'osu';
+  font-weight: 900;
+  src: url('https://mp5tournament.github.io/assets/Torus-Heavy.otf');
+}
+@font-face {
+  font-family: 'cn';
+  src: url('https://mp5tournament.github.io/assets/shangshouruantang.ttf');
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color:white;
+    user-select: none;
+}
+body{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: radial-gradient( #a1a,#026);
+    background-size: 200% 200%;
+    animation: bgFlow 15s linear infinite;
+}
+@keyframes bgFlow {
+    0%, 100% { background-position: 0% 0%; }
+    32% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    82% { background-position: 0% 100%; }
+}
+/* 背景方块 */
+.bg-squares{
+    list-style: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+.bg-squares li{
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255,255,255,0.15);
+    position: absolute;
+    bottom: -160px;
+    animation: square 10s linear infinite;
+}
+.bg-squares li:nth-child(1){
+    left: 10%;
+}
+.bg-squares li:nth-child(2){
+    left: 20%;
+    width: 80px;
+    height: 80px;
+    animation-delay: 2s;
+    animation-duration: 17s;
+}
+.bg-squares li:nth-child(3){
+    left: 25%;
+    animation-delay: 4s;
+}
+.bg-squares li:nth-child(4){
+    left: 40%;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(255,255,255,0.25);
+    animation-duration: 22s;
+}
+.bg-squares li:nth-child(5){
+    left: 70%;
+}
+.bg-squares li:nth-child(6){
+    left: 80%;
+    width: 120px;
+    height: 120px;
+    background-color: rgba(255,255,255,0.2);
+    animation-delay: 3s;
+}
+.bg-squares li:nth-child(7){
+    left: 32%;
+    width: 160px;
+    height: 160px;
+    animation-delay: 7s;
+}
+.bg-squares li:nth-child(8){
+    left: 55%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 15s;
+    animation-duration: 40s;
+}
+.bg-squares li:nth-child(9){
+    left: 25%;
+    width: 10px;
+    height: 10px;
+    background-color: rgba(255,255,255,0.3);
+    animation-delay: 2s;
+    animation-duration: 40s;
+}
+.bg-squares li:nth-child(10){
+    left: 90%;
+    width: 160px;
+    height: 160px;
+    animation-delay: 11s;
+}
+@keyframes square {
+    0%{
+        transform: translateY(0);
+    }
+    100%{
+        transform: translateY(-120vh) rotate(600deg);
+    }
+}
+
+/* mods图标 */
+i {
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+}
+i::after{
+    content: '';
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    background-color: rgba(255,255,255,0.5);
+    box-shadow: 0 0 0.2em white;
+}
+
+.HT::after { background-image: url('https://mp5tournament.github.io/assets/HT.png'); }
+.DT::after { background-image: url('https://mp5tournament.github.io/assets/DT.png'); }
+
+.EZ::after { background-image: url('https://mp5tournament.github.io/assets/EZ.png'); }
+.HR::after { background-image: url('https://mp5tournament.github.io/assets/HR.png'); }
+.HD::after { background-image: url('https://mp5tournament.github.io/assets/HD.png'); }
+.FL::after { background-image: url('https://mp5tournament.github.io/assets/FL.png'); }
+
+.NM::after { background-image: url('https://mp5tournament.github.io/assets/NM.png'); }
+/* 主逻辑 */
+#main {
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    margin: auto;
+}
+.header .game:hover, .player .username:hover{
+    cursor: pointer;
+}
+
+h1{
+    text-align: center;
+    font-family: 'cn';
+    font-weight: 400;
+    font-size: 3rem;
+    display: block;
+    height:4rem;
+    filter: drop-shadow(0 0 0.1rem rgba(255,255,128,0.8)) drop-shadow(0 0 0.5rem rgba(238,221,255,0.6));
+}
+
+.scroll{
+    white-space: nowrap;
+    height: 1em;
+    width: 4.5rem;
+    line-height: 1em;
+    overflow: hidden;
+    position: relative;
+}
+.scroll-text {
+    display: inline-block; 
+    min-width: 100%;
+    position: relative;
+    left: 0;
+    animation: scrolling 10s infinite linear;
+}
+.scroll-text-picker {
+    display: inline-block; 
+    min-width: 100%;
+    position: relative;
+    left: 0;
+    animation: scrolling-picker 10s infinite linear;
+}
+
+
+/* 文本滚动动画 */
+@keyframes scrolling {
+    0%, 10% {
+        transform: translateX(0);
+    }
+    50%,60% {
+        transform: translateX(calc(min(0px, 4.5rem - 100%)));
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+@keyframes scrolling-picker {
+    0%, 10% {
+        transform: translateX(0);
+    }
+    50%,60% {
+        transform: translateX(calc(min(0px, 3.5rem - 100%)));
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+td:hover {
+    background-color: rgba(0,0,0,0.2);
+}
+
+td {
+    border: 0.05rem solid  rgba(0,0,0,0.1);
+    position: relative;
+    background-color: rgba(0,0,0,0.3);
+    padding: 0 0.25rem;
+    font-size: 1rem;
+    line-height: 1rem;
+    width: 5rem;
+    height: 5rem;
+    max-width: 5rem;
+    max-height: 5rem;
+}
+td.rank{
+    width:3rem;
+}
+.header .game, .header .round{
+    background-size: 100% 100%;
+    position: relative;
+}
+.header .game::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+.header .game:hover::after {
+    background: rgba(0, 0, 0, 0.4);
+}
+.header .game > div{
+    position: relative;
+    z-index: 20;
+}
+.header .game .round-game{
+    font-family: 'osu';
+    font-weight: 700;
+    font-size:1.2rem;
+    height:1.2rem;
+    filter: drop-shadow(0 0 0.2rem #ff8);
+    text-align: center;
+}
+.header .game .pick *{
+    color:#aaa;
+    height: 1rem;
+    line-height: 1rem;
+}
+.header .game .pick .by{
+    font-size:0.6rem;
+    float:left;
+}
+.header .game .pick .picker{
+    width: 3.5rem;
+    font-size:0.8rem;
+    font-family: 'osu';
+    font-weight: 600;
+    float: right;
+}
+.header .game .song-title{
+    height: 1.1rem;
+}
+.header .game .song-title *{
+    color: rgba(255,255,255,0.5);
+    font-size:0.6rem;
+}
+.header .game .mods{
+    height:1rem;
+}
+.header .game .mods .fixed{
+    float: left;
+    margin-right: 0.5em;
+}
+.header .game .mods .award{
+    float: right;
+    margin-right: 0.5em;
+}
+
+.header .rank,.header .username,.header .round{
+    background-color: rgba(255,255,255,0.2);
+}
+.header .rank:hover,.header .username:hover,.header .round:hover{
+    background-color: rgba(255,255,255,0.3);
+}
+.header .rank div,.header .username div{
+    text-align: center;
+    font-family: 'cn';
+    font-size: 1.4rem;
+    filter: drop-shadow(0 0 0.2rem #ff8);
+}
+.header .round .text{
+    text-align: center;
+    font-family: 'cn';
+    filter: drop-shadow(0 0 0.2rem #ff8);
+    margin-top: 0.4rem;
+    margin-bottom: 0.1rem;
+}
+.header .round .logo,.header .round .number{
+    font-size:1.4rem;
+    line-height: 1.4rem;
+    text-align: center;
+    font-family: 'osu';
+    font-weight: 700;
+    filter: drop-shadow(0 0 0.2rem #ff8);
+}
+
+.player .rank div{
+    text-align: center;
+    font-family: 'osu';
+    font-size: 700;
+    font-size: 1.4rem;
+    filter: drop-shadow(0 0 0.2rem #ff8);
+}
+.player .username {
+    text-align: center;
+}
+.player .username img{
+    margin: auto;
+    width:3rem;
+    height:3rem;
+    border-radius: 1.5rem;
+    filter: drop-shadow(0 0 0.2rem #ff0) drop-shadow(0 0 0.3rem #edf);
+}
+.player .username div{
+    font-family: 'osu';
+    font-weight: 600;
+    margin-top: 0.25rem;
+}
+
+.player td.game,.player td.round{
+    padding: 0 0.5rem;
+}
+
+.player .round .logo{
+    text-align: center;
+    font-size: 1.8rem;
+    height:1.8rem;
+    margin-top: 0.4rem;
+}
+.player .round .logo.eliminate{
+    filter: drop-shadow(0 0 0.2rem #f00) drop-shadow(0 0 0.4rem #f64) drop-shadow(0 0 0.5rem #f64);
+}
+.player .round .logo.pass{
+    filter: drop-shadow(0 0 0.4rem #8af);
+}
+.player .round .logo.champion{
+    filter: drop-shadow(0 0 0.2rem #8af) drop-shadow(0 0 0.4rem #ff8) drop-shadow(0 0 0.5rem #ff8);
+}
+.player .round .logo.award{
+    filter: drop-shadow(0 0 0.4rem #8af);
+}
+.player .round .logo.going{
+    filter: drop-shadow(0 0 0.4rem #fa0);
+}
+
+.player .rank-points{
+    height: 1.4rem;
+}
+.player .rank-points .rank{
+    font-family: 'osu';
+    font-weight: 400;
+    font-size:1.4rem;
+    line-height: 1.4rem;
+    height: 1.4rem;
+    word-spacing: -0.25rem;
+    float: left;
+}
+.player .rank-points .rank .half{
+    font-size:0.7rem;
+}
+
+.rank-1{
+    font-weight: 700 !important;
+    word-spacing: -0.15rem !important;
+    color: rgb(255,232,72) !important;
+    filter: drop-shadow(0 0 0.25rem rgba(255,232,72,0.5)) drop-shadow(0 0 0.1rem rgba(255,232,72,0.8)) !important;
+}
+.rank-1 .half{
+    font-weight: 700 !important;
+    color: rgb(255,232,72) !important;
+    filter: drop-shadow(0 0 0.1rem rgba(255,232,72,0.5)) !important;
+}
+.rank-2{
+    font-weight: 700 !important;
+    color: rgb(192,192,220) !important;
+    filter: drop-shadow(0 0 0.25rem rgba(192,192,220,0.5)) drop-shadow(0 0 0.1rem rgba(192,192,220,0.8)) !important;
+}
+.rank-2 .half{
+    font-weight: 700 !important;
+    color: rgb(192,192,220) !important;
+    filter: drop-shadow(0 0 0.1rem rgba(192,192,220,0.5)) !important;
+}
+.rank-3{
+    font-weight: 700 !important;
+    color: rgb(240,172,72) !important;
+    filter: drop-shadow(0 0 0.25rem rgba(240,172,72,0.5)) drop-shadow(0 0 0.1rem rgba(240,172,72,0.8)) !important;
+}
+.rank-3 .half{
+    font-weight: 700 !important;
+    color: rgb(240,172,72) !important;
+    filter: drop-shadow(0 0 0.1rem rgba(240,172,72,0.5)) !important;
+}
+.player .rank-points .points{
+    font-family: 'Consolas';
+    font-size: 0.8rem;
+    margin-top: 0.4rem;
+    height: 0.9rem;
+    border-bottom: 1px solid rgba(255,255,255,0.75);
+    color: rgba(255,255,255,0.75);
+    float: right;
+}
+.player .game .award-mods{
+    height: 1.4rem;
+    margin-top: 0.4rem;
+}
+.player .game .award-mods .award{
+    float: left;
+}
+.player .game .award-mods .mods{
+    float: right;
+    margin-right: 0.5em;
+}
+.player .game .score{
+    font-family: 'Consolas';
+    font-weight: 300;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.75);
+    text-align: right;
+}
+</style>
+<style class="remove">
+.eliminate.player{
+    background-color: rgba(128,128,128,0.5);
+}
+.eliminate.player .username img{
+    filter: brightness(50%);
+}
+.eliminate.player .username div *{
+    color: #999;
+}
+</style>
+</head>
+<body>
+    <div style="z-index: 2;">
+        <h1><span id="h2"></span> <span id="h3"></span></h1>
+        <table id="main"></table>
+    </div>
+    
+    <ul class="bg-squares">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+
+<script>
+const main=document.getElementById('main')
+// 调整大小
+let width=1
+let height=1
+
+function calculateSize(){
+    try{
+        width=main.querySelector('tr').querySelectorAll('td').length*5+3
+        height=main.querySelectorAll('tr').length*5+8
+    }catch{return}
+    handleResize()
+}
+
+function handleResize() {
+    document.querySelector('html').style.fontSize=Math.min(
+        window.innerWidth/width,
+        window.innerHeight/height,
+        20,
+    )+'px'
+}
+
+if(!document.querySelector('.remove'))calculateSize()
+window.addEventListener('resize', handleResize)
+</script>
+
+<script class="remove">
+let timestamp=0
+let MatchData=null
+const cacheName=(new URLSearchParams(window.location.search)).get('name')||'mp5'
+
+// 清理资源
+function clearElement(element=main) {
+    while (element.lastChild) {
+        const child = element.lastChild
+        if (child instanceof HTMLElement && !child.classList.contains('persistence')) {
+            clearElement(child)
+            child.onclick = null
+            child.onchange = null
+        }
+
+        element.removeChild(child)
+    }
+}
+
+// 网络
+const retryWaitingTime=1000 //测试
+
+function httpReq(url, args = null, method = 'get', timeout = 10) {
+    if(args){
+        for(let key in args){
+            if(args[key]===null||args[key]===undefined)delete args[key]
+        }
+    }
+
+    const createResult = (error, data, text) => ({ error, data, text })
+
+    method = method.toUpperCase()
+    let finalUrl = url
+    let options = { method }
+
+    if (method === 'GET' && args) {
+        finalUrl += `?${new URLSearchParams(args).toString()}`
+    } else if (method === 'POST') {
+        options.headers = { 'Content-Type': 'application/json' }
+        options.body = JSON.stringify(args || {})
+    }
+
+    const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('timeout')), timeout * 1000)
+    })
+
+    return Promise.race([
+        fetch(finalUrl, options)
+        .then(async response => {
+            const text = await response.text();
+            try {
+                return createResult(null, JSON.parse(text), text);
+            } catch {
+                return createResult(null, text, text);
+            }
+        }),
+        timeoutPromise
+    ]).catch(error => {
+        return createResult(error.message || 'network error', null)
+    })
+}
+
+async function updateData(){
+    let { error, data } = await httpReq('https://cache.flf.moe/cache/mp5pubg_'+cacheName)
+    
+    try{
+        asserts(data.timestamp>timestamp)
+        timestamp=data.timestamp
+        MatchData=data
+        render()
+    }catch{}
+}
+
+// 主逻辑
+function render(){
+    const {Beatmap,Config,MatchName,MatchOrder,MatchResult,OsuData,Progress}=MatchData
+    {
+        function splitFirst(str, separator) {
+            const regex = new RegExp(
+                separator.source, 
+                separator.flags.replace(/g|y/g, '')
+            )
+            
+            const match = regex.exec(str)
+            if (!match) return [str.trim(), '']
+            
+            const matchStart = match.index;
+            const matchLength = match[0].length;
+            const matchEnd = matchStart + matchLength;
+            
+            return [str.slice(0, matchStart).trim(),str.slice(matchEnd).trim()]
+        }
+        let [name, team]=splitFirst(MatchName,/:/)
+        if(team.startsWith('('))team=team.slice(1)
+        if(team.endsWith(')'))team=team.slice(0, -1)
+        let [t1,t2]=splitFirst(team,/\)\s*vs\s*\(/)
+        document.getElementById('h2').textContent=`${name}: ${t1} ${t2}`.trim()
+        document.getElementById('h3').textContent='实时赛况'
+    }
+    clearElement()
+    function icon(mods){
+        let modS=''
+        let modA=[]
+        while(mods){
+            let x=mods.slice(0,2)
+            mods=mods.slice(2)
+            if(x=='DT'||x=='HT')modS=x
+            else if(x!='NM') modA.push(x)
+        }
+        let text=modS?`<i class="${modS}"></i>`:''
+        for(let x of modA)text+=`<i class="${x}"></i>`
+        return text||`<i class="NM"></i>`
+    }
+    {
+        let addPoints=null
+        const tr=document.createElement('tr')
+        tr.className='header'
+        {
+            const td=document.createElement('td')
+            td.className='rank'
+            td.innerHTML='<div>👑</div>'
+            tr.appendChild(td)
+        }
+        {
+            const td=document.createElement('td')
+            td.className='username'
+            td.innerHTML='<div>选手</div>'
+            tr.appendChild(td)
+        }
+        for(let x of MatchOrder){
+            const td=document.createElement('td')
+            if(x.game){
+                addPoints=x.round
+
+                td.className='game'
+                let text=`
+<div class="round-game">${x.round} - ${x.game}</div>
+<div class="pick">
+    <div class="by">by</div>
+    <div class="picker scroll"><span class="scroll-text-picker">${x.map.username || ('主办 ('+x.map.host+')')}</span></div>
+</div>
+<div class="song-title scroll"><span class="scroll-text">${OsuData.beatmap[x.map.bid].title_unicode.trim() || OsuData.beatmap[x.map.bid].title.trim()}</span></div>
+`
+                if(Config.showAward||Config.showFixed){
+                    text+=`<div class="mods">`
+                    if(Config.showFixed)text+=`<div class="fixed">${icon(x.map.mod)}</div>`
+                    if(Config.showAward)text+=`<div class="award">${icon(x.map.award)}</div>`
+                    text+=`</div>`
+                }
+                td.innerHTML=text
+                td.style.backgroundImage=`url("https://assets.ppy.sh/beatmaps/${OsuData.beatmap[x.map.bid].beatmapset_id}/covers/list.jpg")`
+                td.onclick=()=>{window.open(`https://osu.ppy.sh/b/${x.map.bid}`)}
+            }else{
+                addPoints=null
+
+                td.className='round'
+                td.innerHTML=`<div class="logo">⚖️</div><div class="text">Round</div><div class="number">${x.round}</div>`
+            }
+            tr.appendChild(td)
+        }
+        if(addPoints){
+            const td=document.createElement('td')
+            td.className='round'
+                td.innerHTML=`<div class="logo">⚖️</div><div class="text">Round</div><div class="number">${addPoints}</div>`
+            tr.appendChild(td)
+        }
+        main.appendChild(tr)
+    }
+    for(let r of MatchResult){
+        let addPoints=false
+        const tr=document.createElement('tr')
+        tr.className=r.alive?'player':'player eliminate'
+        {
+            const td=document.createElement('td')
+            td.className='rank'
+            td.innerHTML=`<div class="rank-${r.rank}">${r.rank}</div>`
+            tr.appendChild(td)
+        }
+        {
+            const td=document.createElement('td')
+            td.className='username'
+            td.innerHTML=`<img src="https://a.ppy.sh/${OsuData.user[r.username].user_id}" alt="${r.username}">
+<div class="scroll"><span class="scroll-text">${r.username}</span></div>`
+            td.onclick=()=>{window.open(`https://osu.ppy.sh/users/${OsuData.user[r.username].user_id}`)}
+            tr.appendChild(td)
+        }
+        for(let x of r.score){
+            const td=document.createElement('td')
+            if(x.game){
+                addPoints=true
+                td.className=`game`
+                td.innerHTML=`
+<div class="rank-points"><div class="rank rank-${Math.floor(x.rank)}"># ${Math.floor(x.rank)}${(x.rank%1)?'<span class="half">.5</span>':''}</div><div class="points">${format(x.points/Config.constCoef)}</div></div>
+<div class="award-mods"><div class="award">${x.award?'⭐':''}</div><div class="mods">${icon(x.mods)}</div></div>
+<div class="score">${format(x.score,true)}</div>`
+            }else{
+                addPoints=false
+                td.className='round'
+                td.innerHTML=`
+<div class="logo ${x.eliminate?'eliminate':'pass'}">${x.eliminate?'☠️':'▶️'}</div>
+<div class="rank-points"><div class="rank rank-${x.rank}"># ${x.rank}</div><div class="points">${format(x.points/Config.constCoef)}</div></div>`
+            }
+            tr.appendChild(td)
+        }
+        if(addPoints){
+            const td=document.createElement('td')
+            td.className='round'
+            td.innerHTML=`
+<div class="logo ${Config.End?(r.rank==1?'champion':'award'):'going'}">${Config.End?(r.rank==1?'🏆':'🏅'):'🔥'}</div>
+<div class="rank-points"><div class="rank rank-${r.rank}"># ${r.rank}</div><div class="points">${format(r.currentPoints/Config.constCoef)}</div></div>`
+            tr.appendChild(td)
+        }
+        main.appendChild(tr)
+    }
+    console.log(MatchData)
+    calculateSize()
+}
+
+// 工具
+function format(x,comma=false){
+    x=Math.round((x) + 1e-10)
+    return comma?x.toLocaleString('en-US'):x.toString()
+}
+function asserts(x){
+    if(!x)throw ''
+}
+
+// 保存
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && event.altKey && event.shiftKey && event.key == 'F12') {
+        if(Locked)unlock()
+        else lock()
+    }
+    if (event.ctrlKey && event.key.toLowerCase() == 's') {
+        event.preventDefault()
+
+        const docClone = document.documentElement.cloneNode(true)
+        docClone.querySelectorAll('.remove').forEach(script => script.remove())
+        docClone.querySelector('#h0').textContent = docClone.querySelector('#h2').textContent + ' 结果'
+        docClone.querySelector('#h3').textContent = '结果'
+
+        const blob = new Blob([`<!DOCTYPE html>\n${docClone.outerHTML}`], { type: 'text/plain;charset=utf-8' })
+        const link = document.createElement('a')
+        const url = URL.createObjectURL(blob)
+        
+        link.href = url
+        link.download = docClone.querySelector('#h2').textContent + ' 结果.html'
+        
+        document.body.appendChild(link)
+        link.click()
+        
+        setTimeout(() => {
+            document.body.removeChild(link)
+            URL.revokeObjectURL(url)
+        }, 0)
+    }
+})
+
+
+// 监控
+updateData()
+setInterval(updateData,retryWaitingTime)
+</script>
+</body>
+</html>
