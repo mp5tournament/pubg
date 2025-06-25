@@ -743,7 +743,7 @@ function render(){
         if(addPoints){
             const td=document.createElement('td')
             td.className='round'
-            const end=Order.length==Progress.round&&Order[Progress.round].game.length==Progress.game
+            const end=Progress.round==Order.length&&Progress.game===null
             td.innerHTML=`
 <div class="logo ${end?(r.rank==1?'champion':'award'):'going'}">${end?(r.rank==1?'🏆':'🏅'):'🔥'}</div>
 <div class="rank-points"><div class="rank rank-${r.rank}"># ${r.rank}</div><div class="points">${format(r.currentPoints/Config.constCoef)}</div></div>`
