@@ -920,7 +920,6 @@ const OsuData={
 }
 let N=0
 let MatchName=null
-let End=false
 const MatchResult={}
 const MatchOrder=[]
 const MatchResultRank=[]
@@ -974,10 +973,8 @@ const Progress={
             Progress.game=0
         } else {
             Progress.game+=1
-            if(Progress.game>=Order[Progress.round].game.length){
+            if(Progress.game>=Order[Progress.round].game.length)
                 Progress.game=null
-                if(Progress.round+1==Order.length)End=true
-            }
         }
 
         if(Progress.game===null){
@@ -999,12 +996,13 @@ const Progress={
             OsuData,
             MatchResult:MatchResultRank,
             MatchOrder,
+            Order,
             MatchName,
             Beatmap,
             Progress:{round:Progress.round,game:Progress.game},
             Config:{
                 modMultiply:Config.modMultiply,constCoef:Config.constCoef,pointsDecimals:Config.pointsDecimals,
-                showFixed: Config.showFixed,showAward:Config.awardMultiply!=1,End
+                showFixed: Config.showFixed,showAward:Config.awardMultiply!=1
             },
         })
 
