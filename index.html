@@ -898,7 +898,7 @@ function initConfig(){
     let mode=(new URLSearchParams(window.location.search)).get('name')
     if(!(mode in DefaultConfig))mode='mp5'
     document.getElementById('modeLogo').src=`assets/${mode}.png`
-    document.getElementById('modeLogo').title=`裁判表当前为${mode}模式，请在控制台中输入“MODE('模式名')”以更改。`
+    document.getElementById('modeLogo').title=`裁判表当前为${mode}模式，请在控制台中输入“MODE('模式名')”以更改，或直接访问https://mp5tournament.github.io/pubg/?name=你的mode。`
     return [mode, DefaultConfig[mode]]
 }
 function MODE(mode){
@@ -906,9 +906,9 @@ function MODE(mode){
     if(mode){
         mode=mode.toLocaleLowerCase()
         if(!(mode in DefaultConfig))return '没有这个模式'
-        window.search='?name='+mode
+        window.location.search='?name='+mode
     }
-    else window.search=''
+    else window.location.search=''
 }
 const [Mode, Config]=initConfig()
 // 传递Data
