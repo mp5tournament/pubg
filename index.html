@@ -551,9 +551,9 @@ function httpReq(url, args = null, method = 'get', timeout = 10) {
 }
 
 MID=null
-async function getOsuData(target='match',id=MID,test=false){
+async function getOsuData(target='match',id=MID,test=false,param={}){
     let time=new Date()
-    let param={k:apikey.osu}
+    param.k=apikey.osu
     if(target=='match'){
         param.mp=id
     } else if(target=='user') {
@@ -1205,9 +1205,14 @@ const StageP={
     <td class="button"><button onclick="StageP.delete(this)" class="red small">🗑️</button></td>
 </tr>`)
 
-            if(!(bid in OsuData.beatmap)){
-                newMap.push(bid)
+                console.log(bid)
+            try{
+                assert(OsuData.beatmap[bid]).mod==mod)
+                console.log('已有')
+            }catch{
+                newMap.push({bid,mod})
                 OsuData.beatmap[bid]=null
+                console.log('重获')
             }
             if(username&&!(username in OsuData.user)){
                 newUser.push(username)
@@ -1235,18 +1240,22 @@ const StageP={
         mainTable.innerHTML=text.join('\n')
         writeCMD(cmd)
 
-        newMap.forEach((bid, i) => {
+        newMap.forEach(({bid,mod}, i) => {
             async function f() {
                 if(!StageP.table.mapSet.has(bid)){
                     delete OsuData.beatmap[bid]
                     return
                 }
-                let {error,data}=await getOsuData('beatmaps',bid)
+                let mods=0
+                if(mod=='DT')mods=64
+                if(mod=='HT')mods=256
+                let {error,data}=await getOsuData('beatmaps',bid,false,{mods})
                 if(error){
                     setTimeout(f, retryWaitingTime)
                 } else {
                     if(data.length){
                         OsuData.beatmap[bid]=data[0]
+                        OsuData.beatmap[bid].mod=mod
                     } else {
                         OsuData.beatmap[bid]=-1
                         StageP.refresh()
