@@ -1206,7 +1206,9 @@ const StageP={
 </tr>`)
 
                 console.log(bid)
+                console.log(mod)
             try{
+                console.log(OsuData.beatmap[bid].mod)
                 assert(OsuData.beatmap[bid].mod==mod)
                 console.log('已有')
             }catch{
