@@ -1,0 +1,912 @@
+<html>
+<head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2220 0 100 100%22><text y=%22.8em%22 font-size=%22100%22>🎲</text></svg>">
+    <meta charset="utf-8">
+    <title id="h0">MP5吃鸡随机图池页面</title>
+<style>
+@font-face {
+  font-family: 'osu';
+  font-weight: 100;
+  src: url('https://mp5tournament.github.io/assets/Torus-Thin.otf');
+}
+@font-face {
+  font-family: 'osu';
+  font-weight: 300;
+  src: url('https://mp5tournament.github.io/assets/Torus-Light.otf');
+}
+@font-face {
+  font-family: 'osu';
+  font-weight: 400;
+  src: url('https://mp5tournament.github.io/assets/Torus-Regular.otf');
+}
+@font-face {
+  font-family: 'osu';
+  font-weight: 600;
+  src: url('https://mp5tournament.github.io/assets/Torus-SemiBold.otf');
+}
+@font-face {
+  font-family: 'osu';
+  font-weight: 700;
+  src: url('https://mp5tournament.github.io/assets/Torus-Bold.otf');
+}
+@font-face {
+  font-family: 'osu';
+  font-weight: 900;
+  src: url('https://mp5tournament.github.io/assets/Torus-Heavy.otf');
+}
+@font-face {
+  font-family: 'cn';
+  src: url('https://mp5tournament.github.io/assets/shangshouruantang.ttf');
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color:white;
+    user-select: none;
+}
+body{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: radial-gradient( #a1a,#026);
+    background-size: 200% 200%;
+    animation: bgFlow 15s linear infinite;
+    will-change: background-position;
+}
+@keyframes bgFlow {
+    0%, 100% { background-position: 0% 0%; }
+    32% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    82% { background-position: 0% 100%; }
+}
+/* 背景方块 */
+.bg-squares{
+    list-style: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+.bg-squares li{
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255,255,255,0.15);
+    position: absolute;
+    bottom: -160px;
+    animation: square 10s linear infinite;
+    will-change: transform;
+}
+.bg-squares li:nth-child(1){
+    left: 10%;
+}
+.bg-squares li:nth-child(2){
+    left: 20%;
+    width: 80px;
+    height: 80px;
+    animation-delay: 2s;
+    animation-duration: 17s;
+}
+.bg-squares li:nth-child(3){
+    left: 25%;
+    animation-delay: 4s;
+}
+.bg-squares li:nth-child(4){
+    left: 40%;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(255,255,255,0.25);
+    animation-duration: 22s;
+}
+.bg-squares li:nth-child(5){
+    left: 70%;
+}
+.bg-squares li:nth-child(6){
+    left: 80%;
+    width: 120px;
+    height: 120px;
+    background-color: rgba(255,255,255,0.2);
+    animation-delay: 3s;
+}
+.bg-squares li:nth-child(7){
+    left: 32%;
+    width: 160px;
+    height: 160px;
+    animation-delay: 7s;
+}
+.bg-squares li:nth-child(8){
+    left: 55%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 15s;
+    animation-duration: 40s;
+}
+.bg-squares li:nth-child(9){
+    left: 25%;
+    width: 10px;
+    height: 10px;
+    background-color: rgba(255,255,255,0.3);
+    animation-delay: 2s;
+    animation-duration: 40s;
+}
+.bg-squares li:nth-child(10){
+    left: 90%;
+    width: 160px;
+    height: 160px;
+    animation-delay: 11s;
+}
+@keyframes square {
+    0%{
+        transform: translateY(0);
+    }
+    100%{
+        transform: translateY(-120vh) rotate(600deg);
+    }
+}
+
+/* mods图标 */
+i {
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+}
+i::after{
+    content: '';
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    background-color: rgba(255,255,255,0.5);
+    box-shadow: 0 0 0.2em white;
+}
+
+.HT::after { background-image: url('https://mp5tournament.github.io/assets/HT.png'); }
+.DT::after { background-image: url('https://mp5tournament.github.io/assets/DT.png'); }
+
+.EZ::after { background-image: url('https://mp5tournament.github.io/assets/EZ.png'); }
+.HR::after { background-image: url('https://mp5tournament.github.io/assets/HR.png'); }
+.HD::after { background-image: url('https://mp5tournament.github.io/assets/HD.png'); }
+.FL::after { background-image: url('https://mp5tournament.github.io/assets/FL.png'); }
+
+.NM::after { background-image: url('https://mp5tournament.github.io/assets/NM.png'); }
+/* 外层布局 */
+.body{
+    z-index: 2;
+    display: flex;
+    align-items: center;
+}
+#main {
+    border-collapse: collapse;
+}
+.round-title{
+    margin-right: 10vh;
+    text-align: center;
+    font-family: 'cn';
+    font-size:10vh;
+    display: block;
+    filter: drop-shadow(0 0 0.4vh rgba(255,255,128,1)) drop-shadow(0 0 2vh rgba(238,221,255,0.8));
+}
+.round-title *{
+    width:10vh;
+    text-align: center;
+    height:15vh;
+    line-height:15vh;
+}
+
+/* slop */
+.slot{
+    padding-right: 5vh;
+    font-family: 'cn';
+    filter: drop-shadow(0 0 0.2vh rgba(255,255,128,0.8)) drop-shadow(0 0 1vh rgba(238,221,255,0.6));
+}
+.slot .main{
+    font-size:7vh;
+}
+.slot .sub{
+    font-size:5vh;
+}
+.slot .sup{
+    font-size:2.5vh;
+    padding-bottom: 1vh;
+}
+
+/* map */
+.map{
+    height:19.444444444444444444444444444444vh;
+    width:55.555555555555555555555555555556vh;
+    border-radius: 1vh;
+    box-shadow: 0 0 0.5vh 0.1vh rgba(255,255,255, 0.4);
+}
+.map.ongoing{
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 1vh 0.5vh rgba(255,255,160, 1);
+    cursor: pointer;
+}
+.map.future{
+    background-color: rgba(0, 0, 0, 0.2);
+}
+.map .unknown img{
+    height:100%;
+}
+.map.future .unknown img{
+    filter: brightness(0.6);
+}
+.map .meta{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: 100% 100%;
+}
+.map .meta::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 1vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+.map.ongoing .meta::after {
+    background: rgba(0, 0, 0, 0.2);
+}
+.map.played .meta *{
+    color: rgba(255,255,255, 0.4);
+    text-shadow: 0 0 0.25em rgba(255,255,255, 0.6);
+}
+.map.ongoing .meta *{
+    color: white;
+    text-shadow: 0 0 0.2em black;
+    filter: drop-shadow(0 0 0.1em rgba(255,255,192, 0.5));
+}
+.map .meta>div{
+    position: relative;
+    width:50vh;
+    z-index: 20;
+    font-family: 'osu';
+}
+.map .meta>div>div{
+    text-align: left;
+}
+.map .meta span{
+    display: inline-block;
+}
+.map .meta .by{
+    font-size: 1.5vh;
+    padding-right:1vh;
+}
+.map .meta .username{
+    font-size: 2.5vh;
+    font-weight: 700;
+}
+.map .meta .mods{
+    font-size: 2vh;
+    float: right;
+}
+.map .meta .mods .data{
+    padding-right: 1vh;
+}
+.map .meta .mods .hint{
+    padding-left: 1vh;
+}
+.map .meta .data-0{
+    font-size: 2.5vh;
+    font-weight: 600;
+    width:100%;
+    margin-top: 0.5vh;
+    margin-bottom: 0.5vh;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+}
+.map .meta .scroll{
+    min-width:100%;
+    animation: scrolling 10s infinite linear;
+}
+@keyframes scrolling {
+    0%, 10% {
+        transform: translateX(0);
+    }
+    50%,60% {
+        transform: translateX(calc(min(0px, 50vh - 100%)));
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+.map .meta .data-1{
+    font-size: 1.5vh;
+}
+.map .meta .username{
+    font-size: 2.5vh;
+    font-weight: 700;
+}
+.map .meta .star.data{
+    font-weight: 700;
+}
+.map .meta .hint{
+    padding-right:1vh;
+}
+.map .meta .star.data{
+    width:3vh;
+}
+.map .meta .star.hint{
+    width:6.4vh;
+}
+.map .meta .data-2 .data{
+    width:5vh;
+}
+.map .meta .creator.data{
+    font-weight: 600;
+}
+.map .meta .data-2{
+    font-size: 1.5vh;
+    margin-top: 0.5vh;
+    margin-bottom: 0.5vh;
+}
+.map .content{
+    position: relative;
+    border-radius: 1vh;
+    height:19.444444444444444444444444444444vh;
+    width:55.555555555555555555555555555556vh;
+    overflow: hidden;
+    text-align: center;
+
+    opacity: 1;
+}
+.map .content.hidden{
+    opacity: 0;
+}
+.avater{
+    height:100%;
+    width:20%;
+    padding-top: 8%;
+    position: absolute;
+    will-change: transform, opacity;
+}
+.avater img{
+    margin: auto;
+    width:60%;
+    border-radius: 50%;
+    background-color: white;
+    filter: drop-shadow(0 0 0.2rem #ff0) drop-shadow(0 0 0.3rem #edf);
+}
+.avater div{
+    margin-top: 1vh;
+    font-family: 'osu';
+    font-weight: 600;
+    line-height: 2vh;
+    font-size: 2vh;
+    word-wrap: break-word;
+}
+</style>
+</head>
+<body>
+    <div class="body">
+        <div class="round-title">
+            <div>第</div>
+            <div class="round-num"></div>
+            <div>轮</div>
+        </div>
+        <table id="main"></table>
+    </div>
+    
+    <ul class="bg-squares">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+
+    <div id="preload" style="display:none;"></div>
+
+<script>
+const Gradient=500
+const SpeedStart=40
+const SpeedEnd=400
+const SpeedStep=40
+document.querySelector('style').innerHTML+=`
+td.map>div{
+    transition: opacity ${Gradient/1000}s ease-in-out;
+}`
+
+
+const main=document.getElementById('main')
+const preload=document.getElementById('preload')
+let timestamp=0
+let MatchData=null
+const cacheName=(new URLSearchParams(window.location.search)).get('name')||'mp5'
+
+// 清理资源
+function clearElement(element=main) {
+    while (element.lastChild) {
+        const child = element.lastChild
+        if (child instanceof HTMLElement && !child.classList.contains('persistence')) {
+            clearElement(child)
+            child.onclick = null
+            child.onchange = null
+        }
+
+        element.removeChild(child)
+    }
+}
+
+// 声音
+const playSound=(function(){
+    const volume=0.5
+    const sounds={
+        'roll':'assets/roll.wav',
+        'result':'assets/result.wav',
+        'show':'assets/show.wav',
+    }
+    for(let x in sounds) {
+        async function init() {
+                const response = await fetch(sounds[x])
+                const arrayBuffer = await response.arrayBuffer()
+                
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+                
+                sounds[x]=await audioContext.decodeAudioData(arrayBuffer)
+            }
+        init()
+    }
+
+    let i=0
+    async function playSound(x,v=volume){
+        console.log(x+' '+(i++))
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+        const source = audioContext.createBufferSource()
+        const gainNode = audioContext.createGain()
+        
+        source.buffer = sounds[x]
+        gainNode.gain.value = v
+        
+        source.connect(gainNode)
+        gainNode.connect(audioContext.destination)
+        
+        source.start(0)
+    }
+    return playSound
+})();
+
+// 网络
+const RetryWaitingTime=1000
+
+function httpReq(url, args = null, method = 'get', timeout = 10) {
+    if(args){
+        for(let key in args){
+            if(args[key]===null||args[key]===undefined)delete args[key]
+        }
+    }
+
+    const createResult = (error, data, text) => ({ error, data, text })
+
+    method = method.toUpperCase()
+    let finalUrl = url
+    let options = { method }
+
+    if (method === 'GET' && args) {
+        finalUrl += `?${new URLSearchParams(args).toString()}`
+    } else if (method === 'POST') {
+        options.headers = { 'Content-Type': 'application/json' }
+        options.body = JSON.stringify(args || {})
+    }
+
+    const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('timeout')), timeout * 1000)
+    })
+
+    return Promise.race([
+        fetch(finalUrl, options)
+        .then(async response => {
+            const text = await response.text();
+            try {
+                return createResult(null, JSON.parse(text), text)
+            } catch {
+                return createResult(null, text, text)
+            }
+        }),
+        timeoutPromise
+    ]).catch(error => {
+        return createResult(error.message || 'network error', null)
+    })
+}
+
+async function updateData(){
+    let { error, data } = await httpReq('https://cache.flf.moe/cache/mp5pubg_'+cacheName)
+    
+    try{
+        asserts(data.timestamp>timestamp)
+        timestamp=data.timestamp
+        MatchData=data
+        render()
+    }catch{}
+}
+
+// 主逻辑
+function render(){
+    const {Config,MatchOrder,Order,OsuData,Progress,RemainingBeatmap}=MatchData
+    if(Progress.game==null)Progress.game=Infinity
+    console.log(MatchData)
+    document.querySelector('.round-num').textContent=['一','二','三','四','五','六','七','八','九','十'][Progress.round]||(Progress.round+1)
+    clearElement()
+    clearElement(preload)
+    for(let x in OsuData.user){
+        const img=document.createElement('img')
+        img.src=`https://a.ppy.sh/${OsuData.user[x].user_id}`
+        preload.appendChild(img)
+    }
+    for(let x in OsuData.beatmap){
+        const img=document.createElement('img')
+        img.src=`https://assets.ppy.sh/beatmaps/${OsuData.beatmap[x].beatmapset_id}/covers/card@2x.jpg`
+        preload.appendChild(img)
+    }
+    function icon(mods){
+        let modS=''
+        let modA=[]
+        while(mods){
+            let x=mods.slice(0,2)
+            mods=mods.slice(2)
+            if(x=='DT'||x=='HT')modS=x
+            else if(x!='NM') modA.push(x)
+        }
+        let text=modS?`<i class="${modS}"></i>`:''
+        for(let x of modA)text+=`<i class="${x}"></i>`
+        return text||`<i class="NM"></i>`
+    }
+    function getMapDom(map,hidden=false){
+        const mapDom=document.createElement('div')
+        const mapData=OsuData.beatmap[map.bid]
+        mapDom.className='content meta'+(hidden?' hidden':'')
+        mapDom.style.backgroundImage=`url('https://assets.ppy.sh/beatmaps/${mapData.beatmapset_id}/covers/card@2x.jpg')`
+        mapDom.innerHTML=`<div>
+    <div class="pick">
+        <span class="by">picked by</span><span class="username"></span>
+        <div class="mods"></div>
+    </div>
+    <div class="data-0"><span class="scroll">
+        <span class="artist"></span> - <span class="title"></span>
+        [<span class="diff"></span>]
+    </span></div>
+    <div class="artist"></div>
+    <div class="data-1">
+        <span class="star data"></span><span class="star hint">☆</span>
+        <span class="creator hint">Creator:</span><span class="creator data"></span>
+    </div>
+    <div class="data-2">
+        <span class="length hint">长度:</span><span class="length data"></span>
+        <span class="bpm hint">BPM:</span><span class="bpm data"></span>
+        <span class="ar hint">AR:</span><span class="ar data"></span>
+        <span class="cs hint">CS:</span><span class="cs data"></span>
+    </div>
+</div>`
+
+        function arByMod(x,mod){
+            x=Number(x)
+            if(mod=='DT'){
+                if(x<=5) return 5+8*x/15
+                return (13+2*x)/3
+            }else if(mod=='HT'){
+                if(x<=5) return (4*x-15)/3
+                if(x<=7) return (5*x-20)/3
+                return (4*x-13)/3
+            }
+            return x
+        }
+        function lengthByMod(x,mod){
+            x=Number(x)
+            if(mod=='DT') x*=2/3
+            else if(mod=='HT') x*=4/3
+            x=Math.round(x + 1e-10)
+            let s=x%60
+            let m=(x-s)/60
+            return m+':'+format(s,2)
+        }
+        function bpmByMod(x,mod){
+            x=Number(x)
+            if(mod=='DT') return x*1.5
+            else if(mod=='HT') return x*0.75
+            return x
+        }
+        mapDom.querySelector('.username').textContent=map.username?map.username:`主办 (${map.host})`
+        mapDom.querySelector('.title').textContent=mapData.title_unicode||mapData.title
+        mapDom.querySelector('.diff').textContent=mapData.version
+        mapDom.querySelector('.artist').textContent=mapData.artist_unicode||mapData.artist
+        mapDom.querySelector('.creator.data').textContent=mapData.creator
+        mapDom.querySelector('.star.data').textContent=format(mapData.difficultyrating,0,2)
+        mapDom.querySelector('.length.data').textContent=lengthByMod(mapData.total_length,map.mod)
+        mapDom.querySelector('.bpm.data').textContent=format(bpmByMod(mapData.bpm,map.mod),0,0)
+        mapDom.querySelector('.ar.data').textContent=format(arByMod(mapData.diff_approach,map.mod),0,1)
+        mapDom.querySelector('.cs.data').textContent=format(mapData.diff_size,0,1)
+
+        function icon(mods){
+            let modS=''
+            let modA=[]
+            while(mods){
+                let x=mods.slice(0,2)
+                mods=mods.slice(2)
+                if(x=='DT'||x=='HT')modS=x
+                else if(x!='NM') modA.push(x)
+            }
+            let text=modS?`<i class="${modS}"></i>`:''
+            for(let x of modA)text+=`<i class="${x}"></i>`
+            return text||`<i class="NM"></i>`
+        }
+        let innerHTML=''
+        if(Config.showFixed)innerHTML+=`<span class="fix hint">MOD:</span><span class="fix data">${icon(map.mod)}</span>`
+        if(Config.showAward)innerHTML+=`<span class="award hint">奖励:</span><span class="award data">${icon(map.award)}</span>`
+        mapDom.querySelector('.mods').innerHTML=innerHTML
+
+        return mapDom
+    }
+    document.querySelector('style').innerHTML+=`
+tr.gap td{
+    height: ${Order[Progress.round].game.length>=5?'0.46296296296296296296296296296296':'4.4444444444444444444444444444444'}vh;
+}`
+    const playedMap=[]
+    for(let x of MatchOrder){
+        if(x.round!=Progress.round+1)continue
+        if(x.game)playedMap[x.game-1]=x.map
+    }
+    let iR=1
+    let iS=1
+    for(let r=0;r<=Progress.round;r++)
+        for(let i in Order[Progress.round].game){
+            i=Number(i)
+            let optionalMap=null
+            let description=null
+            switch(Order[Progress.round].game[i]){
+                case 'p':
+                    optionalMap=[...RemainingBeatmap.player]
+                    description='Random '+(iR++)
+                    break
+                case 'h':
+                    optionalMap=[...RemainingBeatmap.host]
+                    description='Standard '+(iS++)
+                    break
+                case 'o':
+                    optionalMap=[RemainingBeatmap.host[0]]
+                    description='Standard '+(iS++)
+                    break
+                case 'a':
+                    optionalMap=[...RemainingBeatmap.host].concat([...RemainingBeatmap.player])
+                    break
+            }
+            if(r!=Progress.round)continue
+            if(i){
+                const tr=document.createElement('tr')
+                tr.className='gap'
+                tr.innerHTML='<td></td><td></td>'
+                main.appendChild(tr)
+            }
+            const tr=document.createElement('tr')
+            tr.className=1?'':''
+            {
+                const td=document.createElement('td')
+                td.className='slot'
+                let innerHTML=`<div class="game ${description?'sup':'main'}">${Progress.round+1}-${i+1}</div>`
+                if(description)innerHTML+=`<div class="sub">${description}</span>`
+                td.innerHTML=innerHTML
+                tr.appendChild(td)
+            }
+            {
+                const td=document.createElement('td')
+                if(i<Progress.game){
+                    td.className='played map'
+                    td.innerHTML=``
+                    td.appendChild(getMapDom(playedMap[i]))
+                }else{
+                    
+                    td.innerHTML=`<div class="content unknown"><img src="assets/question_mark.webp"></div>`
+                    if(i>Progress.game) td.className='future map'
+                    else{
+                        td.className='ongoing map'
+
+                        let waiting=false
+                        let status=0  // 0问号 1展示选项 2旋转 3停止 4出图
+                        const content=document.createElement('div')
+                        content.className='content roll hidden'
+                        let result=optionalMap[0]
+                        const avaters=[]
+                        for(let i=optionalMap.length==1?2:0;i<=7;)for(let x of optionalMap){
+                            const avater=document.createElement('div')
+                            avater.className='avater'
+                            avater.style.left='-20%'
+                            const src=x.username?
+                            `https://a.ppy.sh/${OsuData.user[x.username].user_id}`:
+                            `assets/${cacheName}.png`
+                            const text=x.username?x.username:`主办 (${x.host})`
+                            avater.innerHTML=`
+<img src="${src}" alt="${text}">
+<div>${text}</div>
+`
+                            content.appendChild(avater)
+                            avaters[i++]={avater,map:x}
+                            if(optionalMap.length==1){
+                                avater.style.transform='translateX(300%)'
+                                i=8
+                            }
+                        }
+                        const rolling=[]
+                        if(optionalMap.length==1)rolling[2]=avaters[2]
+                        else for(let i=0;i<avaters.length;i++){
+                            avaters[i].next=avaters[(i+1)%avaters.length]
+                            if(i<7)rolling[i]=avaters[i]
+                        }
+                        let speed=SpeedStart
+                        let step=0
+                        let target=null
+                        let firstRound=true
+                        function animationStep(){
+                            if(step){
+                                if((step>0&&speed<target)||(step<0&&speed>target)){
+                                    speed+=step
+                                }else waiting=false
+                            }
+                            if(speed<=0){
+                                waiting=false
+                                playSound('result')
+                                return
+                            }
+                            if(status>1)playSound('roll')
+                            let time=100000/speed
+                            for(let i=0;i<7;i++){
+                                let scale0=0.9
+                                let scale1=0.9
+                                let opacity0=1
+                                let opacity1=1
+                                if(step){
+                                    scale0=firstRound?0.9:0.8
+                                    scale1=0.8
+                                    opacity0=firstRound?1:0.6
+                                    opacity1=0.6
+                                    if(i==2&&!firstRound){
+                                        scale0=1
+                                        opacity0=1
+                                    }
+                                    if(i==3){
+                                        scale1=1
+                                        opacity1=1
+                                    }
+                                }
+                                rolling[i].avater.animate([
+                                    { transform: `translateX(${(i+1)*100}%) scale(${scale0})`,
+                                    opacity: opacity0 },
+                                    { transform: `translateX(${i*100}%) scale(${scale1})`,
+                                    opacity: opacity1 },
+                                ], {
+                                    duration: time,
+                                    fill: 'forwards',
+                                })
+                                rolling[i]=rolling[i].next
+                            }
+
+                            if(step&&firstRound)firstRound=false
+                            setTimeout(animationStep,time)
+                        }
+
+                        function next(){
+                            if(waiting)return
+                            waiting=true
+                            switch(status){
+                                case 0:
+                                    status=optionalMap.length==1?3:1
+                                    td.querySelector('.content').classList.add('hidden')
+                                    
+                                    setTimeout(()=>{
+                                        clearElement(td)
+                                        td.appendChild(content)
+                                        if(optionalMap.length!=1)animationStep()
+
+                                        setTimeout(()=>{
+                                            content.classList.remove('hidden')
+                                        },0)
+                                        setTimeout(()=>{waiting=false},Gradient)
+                                    },Gradient)
+                                    break
+                                case 1:
+                                    status=2
+                                    target=SpeedEnd
+                                    step=SpeedStep
+                                    break
+                                case 2:
+                                    status=3
+                                    target=0
+                                    step=-SpeedStep
+                                    break
+                                case 3:
+                                    status=4
+                                    playSound('show')
+                                    for(let i=0;i<6;i++){
+                                        if(!rolling[i])continue
+                                        let scale0=0.8
+                                        let scale1=0.8
+                                        let delta=0
+                                        let addtion=''
+                                        let addtion1=''
+                                        if(i==2){
+                                            result=rolling[i].map
+                                            scale0=1
+                                            scale1=7
+                                            addtion=' translateY(10%)'
+                                            addtion1=' translateY(10%)'
+                                        }
+                                        if(i<2)delta=-2
+                                        if(i>2)delta=2
+                                        x=rolling[i].avater.animate([
+                                            { transform: `translateX(${(i+1)*100}%) scale(${scale0})`,
+                                            opacity: 1 },
+                                            { transform: `translateX(${(i+1+delta/2)*100}%) scale(${(scale0+scale1)/2})${addtion}`,
+                                            opacity: 0.25 },
+                                            { transform: `translateX(${(i+1+delta)*100}%) scale(${scale1})${addtion1}`,
+                                            opacity: 0 },
+                                        ], {
+                                            duration: Gradient*2,
+                                            fill: 'forwards',
+                                        })
+                                    }
+                                    
+                                    setTimeout(()=>{
+                                        clearElement(td)
+                                        let mapDom=getMapDom(result,true)
+                                        td.appendChild(mapDom)
+
+                                        setTimeout(()=>{
+                                            mapDom.classList.remove('hidden')
+                                        },0)
+                                    },Gradient*2)
+                            }
+                        }
+                        td.onclick=next
+                    }
+                }
+                tr.appendChild(td)
+            }
+            main.appendChild(tr)
+        }
+    calculateSize()
+}
+
+// 工具
+function asserts(x){
+    if(!x)throw ''
+}
+function format(x,digit=0,decimals=0,addition=''){
+    if(addition=='%')x*=100
+    x=Math.round((x * (10 ** decimals)) + 1e-10)
+    let flag=false
+    if(x<0){
+        x=-x
+        flag=true
+    }
+    x=x.toString()
+    if(decimals&&x.length<=decimals)x='0'.repeat(decimals+1-x.length)+x
+    if(flag)x='-'+x
+    if(x.length<digit)x='0'.repeat(digit-x.length)+x
+    if(decimals)x=x.slice(0, x.length - decimals) + '.' + x.slice(x.length - decimals)
+    return x+addition
+}
+
+// 监控
+updateData()
+setInterval(updateData,RetryWaitingTime)
+</script>
+</body>
+</html>
