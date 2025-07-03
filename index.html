@@ -1205,16 +1205,11 @@ const StageP={
     <td class="button"><button onclick="StageP.delete(this)" class="red small">🗑️</button></td>
 </tr>`)
 
-                console.log(bid)
-                console.log(mod)
             try{
-                console.log(OsuData.beatmap[bid].mod)
-                assert(OsuData.beatmap[bid].mod==mod)
-                console.log('已有')
+                asserts(OsuData.beatmap[bid].mod==mod)
             }catch{
                 newMap.push({bid,mod})
                 OsuData.beatmap[bid]=null
-                console.log('重获')
             }
             if(username&&!(username in OsuData.user)){
                 newUser.push(username)
