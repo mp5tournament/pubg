@@ -470,7 +470,6 @@ const playSound=(function(){
 
     let i=0
     async function playSound(x,v=volume){
-        console.log(x+' '+(i++))
         const audioContext = new (window.AudioContext || window.webkitAudioContext)()
         const source = audioContext.createBufferSource()
         const gainNode = audioContext.createGain()
@@ -544,7 +543,6 @@ async function updateData(){
 function render(){
     const {Config,MatchOrder,Order,OsuData,Progress,RemainingBeatmap}=MatchData
     if(Progress.game==null)Progress.game=Infinity
-    console.log(MatchData)
     document.querySelector('.round-num').textContent=['一','二','三','四','五','六','七','八','九','十'][Progress.round]||(Progress.round+1)
     clearElement()
     clearElement(preload)
