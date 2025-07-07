@@ -470,6 +470,7 @@ const playSound=(function(){
 
     let i=0
     async function playSound(x,v=volume){
+        if(x=='roll')v*=3
         const audioContext = new (window.AudioContext || window.webkitAudioContext)()
         const source = audioContext.createBufferSource()
         const gainNode = audioContext.createGain()
