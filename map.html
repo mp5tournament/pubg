@@ -449,29 +449,35 @@ function clearElement(element=main) {
 }
 
 // 声音
-const playSound=(function(){
-    const volume=0.1
-    const sounds={
-        'roll':'assets/roll.wav',
-        'result':'assets/result.wav',
-        'show':'assets/show.wav',
+const playSound = (function() {
+    const volume = 0.1
+    const sounds = {
+        'roll': 'assets/roll.wav',
+        'result': 'assets/result.wav',
+        'show': 'assets/show.wav',
     }
-    for(let x in sounds) {
-        async function init() {
-                const response = await fetch(sounds[x])
-                const arrayBuffer = await response.arrayBuffer()
-                
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-                
-                sounds[x]=await audioContext.decodeAudioData(arrayBuffer)
-            }
-        init()
+    
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+    let isInitialized = false
+
+    async function init() {
+        if(isInitialized) return
+        
+        for(let x in sounds) {
+            const response = await fetch(sounds[x])
+            const arrayBuffer = await response.arrayBuffer()
+            sounds[x] = await audioContext.decodeAudioData(arrayBuffer)
+        }
+        isInitialized = true
     }
 
-    let i=0
-    async function playSound(x,v=volume){
-        if(x=='roll')v*=5
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+    async function playSound(x, v=volume) {
+        if(!isInitialized) await init()
+        
+        if(audioContext.state=='suspended') await audioContext.resume()
+        
+        if(x=='roll') v*=5
+        
         const source = audioContext.createBufferSource()
         const gainNode = audioContext.createGain()
         
@@ -481,8 +487,14 @@ const playSound=(function(){
         source.connect(gainNode)
         gainNode.connect(audioContext.destination)
         
+        source.onended = () => {
+            source.disconnect()
+            gainNode.disconnect()
+        }
+        
         source.start(0)
     }
+
     return playSound
 })();
 
@@ -516,7 +528,7 @@ function httpReq(url, args = null, method = 'get', timeout = 10) {
     return Promise.race([
         fetch(finalUrl, options)
         .then(async response => {
-            const text = await response.text();
+            const text = await response.text()
             try {
                 return createResult(null, JSON.parse(text), text)
             } catch {
@@ -540,8 +552,10 @@ async function updateData(){
     }catch{}
 }
 
+let renderN=0
 // 主逻辑
 function render(){
+    const rendern=++renderN
     const {Config,MatchOrder,Order,OsuData,Progress,RemainingBeatmap}=MatchData
     if(Progress.game==null)Progress.game=Infinity
     document.querySelector('.round-num').textContent=['一','二','三','四','五','六','七','八','九','十'][Progress.round]||(Progress.round+1)
@@ -754,6 +768,7 @@ tr.gap td{
                         let target=null
                         let firstRound=true
                         function animationStep(){
+                            if(rendern!=renderN)return
                             if(step){
                                 if((step>0&&speed<target)||(step<0&&speed>target)){
                                     speed+=step
@@ -880,7 +895,6 @@ tr.gap td{
             }
             main.appendChild(tr)
         }
-    calculateSize()
 }
 
 // 工具
