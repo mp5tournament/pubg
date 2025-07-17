@@ -53,6 +53,8 @@ body{
     justify-content: center;
     align-items: center;
     overflow: hidden;
+}
+body.bg{
     background: radial-gradient( #a1a,#026);
     background-size: 200% 200%;
     animation: bgFlow 15s linear infinite;
@@ -64,7 +66,10 @@ body{
     82% { background-position: 0% 100%; }
 }
 /* 背景方块 */
-.bg-squares{
+body:not(.bg) .bg-squares{
+    display: none;
+} 
+.bg .bg-squares{
     list-style: none;
     position: absolute;
     top: 0;
@@ -73,7 +78,7 @@ body{
     height: 100%;
     z-index: 1;
 }
-.bg-squares li{
+.bg .bg-squares li{
     width: 40px;
     height: 40px;
     background-color: rgba(255,255,255,0.15);
@@ -81,51 +86,51 @@ body{
     bottom: -160px;
     animation: square 10s linear infinite;
 }
-.bg-squares li:nth-child(1){
+.bg .bg-squares li:nth-child(1){
     left: 10%;
 }
-.bg-squares li:nth-child(2){
+.bg .bg-squares li:nth-child(2){
     left: 20%;
     width: 80px;
     height: 80px;
     animation-delay: 2s;
     animation-duration: 17s;
 }
-.bg-squares li:nth-child(3){
+.bg .bg-squares li:nth-child(3){
     left: 25%;
     animation-delay: 4s;
 }
-.bg-squares li:nth-child(4){
+.bg .bg-squares li:nth-child(4){
     left: 40%;
     width: 60px;
     height: 60px;
     background-color: rgba(255,255,255,0.25);
     animation-duration: 22s;
 }
-.bg-squares li:nth-child(5){
+.bg .bg-squares li:nth-child(5){
     left: 70%;
 }
-.bg-squares li:nth-child(6){
+.bg .bg-squares li:nth-child(6){
     left: 80%;
     width: 120px;
     height: 120px;
     background-color: rgba(255,255,255,0.2);
     animation-delay: 3s;
 }
-.bg-squares li:nth-child(7){
+.bg .bg-squares li:nth-child(7){
     left: 32%;
     width: 160px;
     height: 160px;
     animation-delay: 7s;
 }
-.bg-squares li:nth-child(8){
+.bg .bg-squares li:nth-child(8){
     left: 55%;
     width: 20px;
     height: 20px;
     animation-delay: 15s;
     animation-duration: 40s;
 }
-.bg-squares li:nth-child(9){
+.bg .bg-squares li:nth-child(9){
     left: 25%;
     width: 10px;
     height: 10px;
@@ -133,7 +138,7 @@ body{
     animation-delay: 2s;
     animation-duration: 40s;
 }
-.bg-squares li:nth-child(10){
+.bg .bg-squares li:nth-child(10){
     left: 90%;
     width: 160px;
     height: 160px;
@@ -383,6 +388,8 @@ td.rank{
 }
 
 .player .round .logo{
+    font-family: 'osu';
+    word-spacing: -0.25rem;
     text-align: center;
     font-size: 1.8rem;
     height:1.8rem;
@@ -451,7 +458,7 @@ td.rank{
     color: rgb(240,172,72) !important;
     filter: drop-shadow(0 0 0.1rem rgba(240,172,72,0.5)) !important;
 }
-.player .rank-points .points{
+.player .points{
     font-family: 'Consolas';
     font-size: 0.8rem;
     margin-top: 0.4rem;
@@ -477,6 +484,39 @@ td.rank{
     font-size: 0.8rem;
     color: rgba(255,255,255,0.75);
     text-align: right;
+}
+
+
+.player .lite-rank{
+    width:100%;
+    text-align: center;
+    font-family: 'osu';
+    font-weight: 400;
+    font-size:1.4rem;
+    line-height: 1.4rem;
+    height: 1.4rem;
+    word-spacing: -0.25rem;
+    float: left;
+    margin-bottom: 0.25rem;
+}
+.player .lite-score{
+    width:100%;
+    text-align: center;
+    font-family: 'Consolas';
+    font-weight: 300;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.75);
+}
+.player .lite-points{
+    font-family: 'Consolas';
+    font-size: 0.8rem;
+    margin-top: -0.8rem;
+    transform: translateY(0.8rem);
+    height: 0.9rem;
+    border-bottom: 1px solid rgba(255,255,255,0.75);
+    color: rgba(255,255,255,0.75);
+    float: right;
+
 }
 </style>
 <style class="remove">
@@ -539,8 +579,16 @@ window.addEventListener('resize', handleResize)
 <script class="remove">
 let timestamp=0
 let MatchData=null
-const cacheName=(new URLSearchParams(window.location.search)).get('name')||'mp5'
-
+const cacheName=((new URLSearchParams(window.location.search)).get('name')||'mp5').trim().toLowerCase()
+const showMode=((new URLSearchParams(window.location.search)).get('show')||'default').trim().toLowerCase()
+function judge(param,default0=true){
+    param=(new URLSearchParams(window.location.search)).get(param)
+    if(!param)return default0
+    param=param.trim().toLowerCase()
+    if (['false', '0', 'no', 'off', 'null', 'undefined'].includes(param))return false
+    return true
+}
+if(judge('bg'))document.querySelector('body').classList.add('bg')
 // 清理资源
 function clearElement(element=main) {
     while (element.lastChild) {
@@ -727,6 +775,11 @@ function render(){
             if(x.game){
                 addPoints=true
                 td.className=`game`
+                if(showMode=='lite')
+                td.innerHTML=`
+<div class="lite-rank rank-${Math.floor(x.rank)}">${format(x.points/Config.constCoef)}</div>
+<div class="lite-score">${format(x.score,true)}</div>`
+                else
                 td.innerHTML=`
 <div class="rank-points"><div class="rank rank-${Math.floor(x.rank)}"># ${Math.floor(x.rank)}${(x.rank%1)?'<span class="half">.5</span>':''}</div><div class="points">${format(x.points/Config.constCoef)}</div></div>
 <div class="award-mods"><div class="award">${x.award?'⭐':''}</div><div class="mods">${icon(x.mods)}</div></div>
@@ -734,6 +787,11 @@ function render(){
             }else{
                 addPoints=false
                 td.className='round'
+                if(showMode=='lite')
+                td.innerHTML=`
+<div class="logo ${x.eliminate?'eliminate':('rank-'+x.rank)}">${x.eliminate?'☠️':('# '+x.rank)}</div>
+<div class="lite-points">${format(x.points/Config.constCoef)}</div>`
+                else
                 td.innerHTML=`
 <div class="logo ${x.eliminate?'eliminate':'pass'}">${x.eliminate?'☠️':'▶️'}</div>
 <div class="rank-points"><div class="rank rank-${x.rank}"># ${x.rank}</div><div class="points">${format(x.points/Config.constCoef)}</div></div>`
@@ -744,6 +802,11 @@ function render(){
             const td=document.createElement('td')
             td.className='round'
             const end=Progress.round==Order.length-1&&Progress.game===null
+            if(showMode=='lite')
+            td.innerHTML=`
+<div class="logo ${end?(r.rank==1?'champion':'award'):('rank-'+r.rank)}">${end?(r.rank==1?'🏆':'🏅'):('# '+r.rank)}</div>
+<div class="lite-points">${format(r.currentPoints/Config.constCoef)}</div>`
+            else
             td.innerHTML=`
 <div class="logo ${end?(r.rank==1?'champion':'award'):'going'}">${end?(r.rank==1?'🏆':'🏅'):'🔥'}</div>
 <div class="rank-points"><div class="rank rank-${r.rank}"># ${r.rank}</div><div class="points">${format(r.currentPoints/Config.constCoef)}</div></div>`
