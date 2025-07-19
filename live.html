@@ -660,7 +660,6 @@ async function updateData(){
 // 主逻辑
 function render(){
     const {Beatmap,Config,MatchName,MatchOrder,Order,MatchResult,OsuData,Progress}=MatchData
-    console.log(MatchData)
     {
         function splitFirst(str, separator) {
             const regex = new RegExp(
@@ -716,7 +715,6 @@ function render(){
             tr.appendChild(td)
         }
         for(let x of MatchOrder){
-    console.log(x)
             const td=document.createElement('td')
             if(x.game){
 
