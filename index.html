@@ -690,21 +690,39 @@ DefaultConfig={
     'mp5':{
         TOURNAMENT:'MP5PUBG',
         order:function(x){ // p=随机玩家图 h=随机固定图 o=顺序固定图 a=随机任意图 // 请不要混用a与其他字母，或混用h和o
+            const custom={
+                2:[
+                    {            game:'aaaaaaa'},
+                ],
+                3:[
+                    {playerEnd:2,game:'aaaa'},
+                    {            game:'aaaa'},
+                ],
+                4:[
+                    {playerEnd:3,game:'aaa'},
+                    {playerEnd:2,game:'aaa'},
+                    {            game:'aaa'},
+                ],
+                5:[
+                    {playerEnd:4,game:'aaa'},
+                    {playerEnd:3,game:'aaa'},
+                    {playerEnd:2,game:'aa'},
+                    {            game:'aa'},
+                ],
+            }
             const playerNum={
-                4: [3],
-                5: [4,3],
-                6: [5,4,3],
+                6: [5,4,3,2],
                 7: [6,5,4,3],
                 8: [6,5,4,3],
-                9: [7,6,5,3],
-                10:[8,6,5,3],
+                9: [7,5,4,3],
+                10:[8,6,4,3],
                 11:[9,7,5,3],
-                12:[10,7,5,3],
-                13:[11,8,5,3],
-                14:[11,9,7,5,3],
-                15:[12,9,7,5,3],
-                16:[13,10,7,5,3],
+                12:[9,7,5,3],
+                13:[10,7,5,3],
+                14:[11,8,5,3],
+                15:[12,9,6,3],
             }
+            if(x in custom)return custom[x]
             if(x in playerNum){
                 const r=[]
                 let lastP=x+1
