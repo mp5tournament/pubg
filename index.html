@@ -1171,7 +1171,7 @@ const StageP={
         StageP.refresh()
     },
     clear:function(){
-        if(!confirm('这将清空左侧全部内容，你确定要这样做吗？'))
+        if(!confirm('这将清空左侧全部内容，你确定要这样做吗？'))return
         StageP.table.host.length=0
         StageP.table.player.length=0
         StageP.refresh()
