@@ -690,80 +690,31 @@ DefaultConfig={
     'mp5':{
         TOURNAMENT:'MP5PUBG',
         order:function(x){ // p=随机玩家图 h=随机固定图 o=顺序固定图 a=随机任意图 // 请不要混用a与其他字母，或混用h和o
-            const custom={
-                4:[
-                    {playerEnd:3,game:'aaaa'},
-                    {            game:'aaa'},
-                ],
-                5:[
-                    {playerEnd:4,game:'aaa'},
-                    {playerEnd:3,game:'aaa'},
-                    {            game:'aa'},
-                ],
-                6:[
-                    {playerEnd:5,game:'aaa'},
-                    {playerEnd:4,game:'aa'},
-                    {playerEnd:3,game:'aa'},
-                    {            game:'aa'},
-                ],
-                7:[
-                    {playerEnd:6,game:'aaa'},
-                    {playerEnd:5,game:'aaa'},
-                    {playerEnd:4,game:'aa'},
-                    {playerEnd:3,game:'aa'},
-                    {            game:'aa'},
-                ],
-                8:[
-                    {playerEnd:7,game:'aaa'},
-                    {playerEnd:6,game:'aaa'},
-                    {playerEnd:5,game:'aaa'},
-                    {playerEnd:3,game:'aa'},
-                    {            game:'aa'},
-                ],
-                9:[
-                    {playerEnd:8,game:'aaa'},
-                    {playerEnd:7,game:'aaa'},
-                    {playerEnd:5,game:'aaa'},
-                    {playerEnd:3,game:'aaa'},
-                    {            game:'aa'},
-                ],
-                10:[
-                    {playerEnd:9,game:'aaa'},
-                    {playerEnd:7,game:'aaa'},
-                    {playerEnd:5,game:'aaa'},
-                    {playerEnd:3,game:'aaa'},
-                    {            game:'aaa'},
-                ],
-                11:[
-                    {playerEnd:9,game:'aaaa'},
-                    {playerEnd:7,game:'aaa'},
-                    {playerEnd:5,game:'aaa'},
-                    {playerEnd:3,game:'aaa'},
-                    {            game:'aaa'},
-                ],
-                12:[
-                    {playerEnd:10,game:'aaaa'},
-                    {playerEnd:8,game:'aaaa'},
-                    {playerEnd:5,game:'aaa'},
-                    {playerEnd:3,game:'aaa'},
-                    {            game:'aaa'},
-                ],
-                13:[
-                    {playerEnd:11,game:'aaaa'},
-                    {playerEnd:8,game:'aaaa'},
-                    {playerEnd:5,game:'aaaa'},
-                    {playerEnd:3,game:'aaa'},
-                    {            game:'aaa'},
-                ],
-                14:[
-                    {playerEnd:12,game:'aaaa'},
-                    {playerEnd:9,game:'aaaa'},
-                    {playerEnd:6,game:'aaaa'},
-                    {playerEnd:4,game:'aaaa'},
-                    {            game:'aaa'},
-                ],
+            const playerNum={
+                4: [3],
+                5: [4,3],
+                6: [5,4,3],
+                7: [6,5,4,3],
+                8: [6,5,4,3],
+                9: [7,6,5,3],
+                10:[8,6,5,3],
+                11:[9,7,5,3],
+                12:[10,7,5,3],
+                13:[11,8,5,3],
+                14:[11,9,7,5,3],
+                15:[12,9,7,5,3],
+                16:[13,10,7,5,3],
             }
-            if(x in custom)return custom[x]
+            if(x in playerNum){
+                const r=[]
+                let lastP=x+1
+                for(let y of playerNum[x]){
+                    r.push({playerEnd:y,game:'a'.repeat(lastP-y+1)})
+                    lastP=y
+                }
+                r.push({game:'a'.repeat(lastP-1)})
+                return r
+            }
             return null
         },
         modMultiply:{
