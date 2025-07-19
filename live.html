@@ -660,6 +660,7 @@ async function updateData(){
 // 主逻辑
 function render(){
     const {Beatmap,Config,MatchName,MatchOrder,Order,MatchResult,OsuData,Progress}=MatchData
+    console.log(MatchData)
     {
         function splitFirst(str, separator) {
             const regex = new RegExp(
@@ -707,6 +708,7 @@ function render(){
             td.innerHTML='<div>👑</div>'
             tr.appendChild(td)
         }
+
         {
             const td=document.createElement('td')
             td.className='username'
@@ -714,8 +716,10 @@ function render(){
             tr.appendChild(td)
         }
         for(let x of MatchOrder){
+    console.log(x)
             const td=document.createElement('td')
             if(x.game){
+
                 addPoints=x.round
 
                 td.className='game'
@@ -725,7 +729,7 @@ function render(){
     <div class="by">by</div>
     <div class="picker scroll"><span class="scroll-text-picker">${x.map.username || ('主办 ('+x.map.host+')')}</span></div>
 </div>
-<div class="song-title scroll"><span class="scroll-text">${OsuData.beatmap[x.map.bid].title_unicode.trim() || OsuData.beatmap[x.map.bid].title.trim()}</span></div>
+<div class="song-title scroll"><span class="scroll-text">${OsuData.beatmap[x.map.bid].title_unicode || OsuData.beatmap[x.map.bid].title.trim()}</span></div>
 `
                 if(Config.showAward||Config.showFixed){
                     text+=`<div class="mods">`
