@@ -405,7 +405,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button {
             </div>
         </div>
         <div class="split-panel main-right">
-            <div class="split-panel" style="flex:2;padding: 5px;max-width: 400px;">
+            <div class="split-panel" style="flex:2;padding: 5px;max-width: 450px;">
                 <div id="mainTableBanner"></div>
                 <table id="mainTable">
                 </table>
@@ -1113,9 +1113,21 @@ const StageP={
             raw=raw.trim()
             if(!raw)continue
             let line=[]
-            for(let x of raw.split('\t'))line.push(x.trim())
+            let multiply=1
+            for(let x of raw.split('\t')){
+                if(x.startsWith('*')){
+                    try{
+                        let m=Number(x.slice(1))
+                        asserts(m)
+                        multiply=m
+                    }catch{}
+                    continue
+                }
+                line.push(x.trim())
+            }
             let m={}
             let modAll=''
+            
             if(/^\d+$/.test(line[1])){
                 m.username=line[0]
                 m.bid=line[1]
@@ -1180,7 +1192,10 @@ const StageP={
             const awardMods=[...modA].concat([...modF])
             awardMods.sort()
             m.award=(awardMods.join(''))||'NM'
-            if(m.username)StageP.table.player.push(m)
+            if(m.username){
+                m.multiply=multiply
+                StageP.table.player.push(m)
+            }
             else StageP.table.host.push(m)
         }
         mainConsole.querySelector('textarea').value=''
@@ -1215,9 +1230,10 @@ const StageP={
         StageP.refresh()
     },
     refresh(){
-        function addMap({username,bid,mod,award,checked}){
+        function addMap({username,bid,mod,award,checked,multiply}){
             text.push(`<tr data-type="${username?'player':'host'}" data-id="${i++}"${checked?'':' class="waiting"'}">
     <td${(username&&OsuData.user[username]===-1)?' class="username error" title="没有找到该玩家"':' class="username"'}>${username||('固定图'+i)}</td>
+    <td class="multiply">${username?('(*'+multiply+')'):''}</td>
     <td${(OsuData.beatmap[bid]===-1)?' class="bid error" title="没有找到该图"':' class="bid"'}>${bid}</td>
     <td class="mod">${mod}</td>
     <td class="award">${award}</td>
@@ -1313,7 +1329,7 @@ const StageP={
         Beatmap.host.length=0
         Beatmap.player.length=0
 
-        function verify({username,bid,mod,award,checked}){
+        function verify({username,bid,mod,award,checked,multiply}){
             if(!checked)return false
             
             if(username){
@@ -1325,7 +1341,7 @@ const StageP={
                     return true
                 }
                 
-                Beatmap.player.push({username,bid,mod,award})
+                Beatmap.player.push({username,bid,mod,award,multiply})
             } else {
                 Beatmap.host.push({username,bid,mod,award})
             }
@@ -1425,6 +1441,7 @@ const StageP={
             score.innerHTML=`
 <td class="rank"></td>
 <td class="username" title="${username}">${username}</td>
+<td class="multiply">(*${MatchResult[username].multiply})</td>
 <td class="button"><button onclick="copyText(null,'!MP INVITE ${username}')" class="blue small">👋</button></td>
 <td class="button"><button onclick="copyText(null,'!MP KICK ${username}')" class="red small">🚫</button></td>
 <td class="points"></td>
@@ -1432,24 +1449,26 @@ const StageP={
             return {main,mainInputS,mainInputM,mainScore:main.querySelector('.score'),score,scorePoints:score.querySelector('.points')}
         }
         for(let x of Beatmap.player){
-            x=x.username
+            let username=x.username
             const y={
-                username:x,
+                username,
                 alive:true,
                 score:[],
                 points:[],
                 currentPoints:0,
-                rank:null
+                rank:null,
+                multiply:x.multiply,
             }
-            MatchResult[x]=y
+            MatchResult[username]=y
             MatchResultRank.push(y)
-            PlayerDom[x]=createPlayerDom(x)
-            RemainingPlayer.push(x)
-            Uid2Uasername[OsuData.user[x].user_id]=x
+            PlayerDom[username]=createPlayerDom(username)
+            RemainingPlayer.push(username)
+            Uid2Uasername[OsuData.user[username].user_id]=username
         }
         scoreboardHeader.innerHTML=`
 <td class="rank">#</td>
 <td class="username">玩家</td>
+<td class="multiply">倍率</td>
 <td class="button" title="复制该玩家的邀请命令">邀</td>
 <td class="button" title="复制该玩家的踢出命令">踢</td>
 <td class="points" title="当前轮次总积分">积分</td>
@@ -1739,6 +1758,7 @@ title="只有打开“自动获取分数”时才会自动获取分数，且自�
             if(flag)dom.mainScore.classList.add('warning')
             else dom.mainScore.classList.remove('warning')
             let score=Number(rscore)||0
+            score*=MatchResult[username].multiply
             for(let x of mods){
                 if(x in Config.modMultiply)score*=Config.modMultiply[x]
             }
