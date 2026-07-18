@@ -729,28 +729,34 @@ DefaultConfig={
                     {playerEnd:2,game:'aa'},
                     {            game:'aa'},
                 ],
+                15:[
+                    {playerEnd:13,game:'ppph'},
+                    {playerEnd:10,game:'pppph'},
+                    {playerEnd:7,game:'ppph'},
+                    {playerEnd:4,game:'ppph'},
+                    {            game:'pph'},
+                ],
             }
             const playerNum={
                 6: [5,4,3,2],
-                7: [6,4,3,2],
-                8: [7,5,3,2],
-                9: [8,6,4,2],
-                10:[8,6,4,2],
-                11:[9,6,4,2],
-                12:[10,7,4,2],
-                13:[10,7,4,2],
-                14:[11,8,5,3],
-                15:[12,9,6,3],
+                7: [6,5,4,3],
+                8: [7,5,4,3],
+                9: [8,6,5,3],
+                10:[9,7,5,3],
+                11:[9,7,5,3],
+                12:[10,7,5,3],
+                13:[11,8,6,3],
+                14:[12,9,6,3],
             }
             if(x in custom)return custom[x]
             if(x in playerNum){
                 const r=[]
                 let lastP=x+1
                 for(let y of playerNum[x]){
-                    r.push({playerEnd:y,game:'a'.repeat(lastP-y+1)})
+                    r.push({playerEnd:y,game:'p'.repeat(lastP-y)+'h'})
                     lastP=y
                 }
-                r.push({game:'a'.repeat(lastP)})
+                r.push({game:'p'.repeat(lastP-1)+'h'})
                 return r
             }
             return null
